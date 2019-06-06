@@ -1,0 +1,6 @@
+1. Normal curve in python and measuring the probability. Histogram
+2. Computing P-Value
+3. Fitting a curve using line and a parabola
+4. Draw Confidence interval around a curve
+5. Why is regr.coef_[0][0] a matrix
+6. Hyperparameter optimization. - RandomizedSearchCV, GridSearchCV

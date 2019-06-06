@@ -1,0 +1,299 @@
+1. IMPORTING LIBRARIES
+2. IMPORTING DATA(CSV, TXT ETC.)
+3. PREPROCESSING
+4. SPLITTING/MERGING/SAMPLING/BOOTSTRAPPING ETC.
+5. DATA ANALYSIS STEPS
+6. MACHINE LEARNING STEPS
+7. EVALUATION STEPS
+8. VISUALIZATION
+9. STORY TELLING
+10. MISCELLANEOUS
+---------------------------------
+1. IMPORTING LIBRARIES
+---------------------------------
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+from sklearn.preprocessing import Imputer
+from sklearn.preprocessing import LabelEncoder,OneHotEncoder
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LinearRegression
+import statsmodels.formula.api as sm
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.tree import DecisionTreeRegressor
+from sklearn.ensemble import RandomForestRegressor
+---------------------------------
+2. IMPORTING DATA(CSV, TXT ETC.)
+---------------------------------
+data = pd.read_csv('Data.csv')
+data = pd.read_csv('examples/brain_size.csv', sep=';', na_values=".")
+#importing file from googleDrive into google Colab
+from google.colab import drive
+drive.mount('/content/drive')
+x = '/content/drive/My Drive/dataset-har-PUC-Rio-ugulino.csv' #Remember to put a slash in the start
+data = pd.read_csv(x, sep=';', na_values=".")
+
+X = dataset.iloc[:, 1:2].values # Should always be a matrix( and not a vector), (n,m) even if m is 1 
+y = dataset.iloc[:, 2].values # Should always be a vector, (n,)
+
+---------------------------------
+3. PREPROCESSING
+---------------------------------
+3.1 MISSING DATA - COUNT NAN VALUES IN DATAFRAME/ REMOVE THE ROW OR INSERT MEAN HAVING NAN
+	i. imputer = Imputer(missing_values = 'NaN', strategy = 'mean', axis = 0)
+			#[axis = 0 for Columns, 1 for rows
+			#strategy = 'mean' by default
+			#missing_values = Value the need to be replaced]
+		imputer = imputer.fit(X[:, 1:3])
+		X[:, 1:3] = imputer.transform(X[:, 1:3])
+	ii. Final_data.fillna(Final_data.mean(),inplace = True)
+	iii.counter_nan = dataframe_all.isnull().sum() #Count nuumber of null or nan in each column and display Series of column nam and counter_nan
+
+3.2 CATEGORICAL DATA
+	#Encode Text(France/Spain/Germany , Yes/No) into numbers(0/1/2 , 0/1)
+	#Yes/No to 0/1 - Encoding the dependent variable/target variable
+	i.	labelencoder_y = LabelEncoder()
+		y = labelencoder_y.fit_transform(y)
+	#Fully Paid/Charged Off to 0/1 #CONVERTING TARGET VARIABLE TO BOOLEAN # Changing/Replacing values in a column
+	ii. di = {"Fully Paid":0, "Charged Off":1}   
+		Dataset_withBoolTarget= data_with_loanstatus_sliced.replace({"loan_status": di})
+		Final_data["emp_length"] = Final_data["emp_length"].replace({`years`:``,`year`:``,` `:``,`<`:``,'\+':``,`n/a`:`0`}, regex = True)
+	#France/Spain/Germany to 0/1/2
+	iii.labelEncoder_X = LabelEncoder()
+		X[:,0] = labelEncoder_X.fit_transform(X[:,0])
+		#But, this might lead to our ML algo consider France < Spain < Germany so we will do DUMMY ENCODING(OneHotEncoder) Convert One Column to Multiple Categorical Columns
+		#Encoding the Independent Variable
+		labelEncoder_X = LabelEncoder()
+		X[:,0] = labelEncoder_X.fit_transform(X[:,0])
+		oneHotEncoder_X = OneHotEncoder(categorical_features= [0])
+		X = onehotencoder.fit_transform(X).toarray()
+
+	iv. Final_data[`grade`] = Final_data[`grade`].map({`A`:7,`B`:6,`C`:5,`D`:4,`E`:3,`F`:2,`G`:1})# convert Categorical text to a number
+
+
+	# map(), 
+
+3.3 REMOVING COLUMNS
+	empty_cols = [i for i in range(45,72)]
+	dataset = dataset.drop(dataset.columns[empty_cols],axis=1)
+
+	del_col_names = ["delinq_2yrs",  "last_pymnt_d", "chargeoff_within_12_mths","delinq_amnt","emp_title", "term", "emp_title",	"pymnt_plan","purpose","title", "zip_code", "verification_status", "dti","earliest_cr_line", "initial_list_status", "out_prncp", "pymnt_plan", "num_tl_90g_dpd_24m", "num_tl_30dpd", "num_tl_120dpd_2m", "num_accts_ever_120_pd", "delinq_amnt",  "chargeoff_within_12_mths", "total_rec_late_fee", "out_prncp_inv", "issue_d"] #deleting some more columns
+	dataset = dataset.drop(labels = del_col_names, axis = 1) 
+
+	dataset=Dataset_withBoolTarget.dropna(thresh = 340000,axis=1) #340000 is minimum number of non-NA values, Removing all columns having more than 340000 Nan values
+	dataset.dropna(subset=['price', 'horsepower'], inplace=True)
+
+	# drop(), dropna()
+
+3.4 REMOVING ROWS
+	dataset = dataset.dropna(axis=0) # Remove any rows with missing values.
+
+	dataset = dataset[dataset["column_name"] > 0] # Remove any rows without following condition
+	
+3.5 CONVERTING TYPE OF COLUMN
+	Final_data["emp_length"] = Final_data["emp_length"].apply(lambda x:int(x))
+	Final_data[“emp_length”] = Final_data[“emp_length”].apply(lambda x:pd.to_numeric(x, downcast=’integer’))
+------------------------------------------------------
+4. SPLITTING/MERGING/SAMPLING/BOOTSTRAPPING/SCALING/GROUPING ETC.
+------------------------------------------------------
+4.1 SPLITTING THE DATASET INTO THE TRAINING SET AND TEST SET
+	X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 0)
+	cv = ShuffleSplit(n_splits=100, test_size=0.2, random_state=0)
+
+4.2 FEATURE SCALING
+	i.  #Eculidean Distance is used to plot data or compare data points 
+		#So Salary is thousands and Age is 2 digit numbers and thus, feature Scaling is important to plot data properly.
+		sc_X = StandardScaler()
+		X_train = sc_X.fit_transform(X_train)
+		X_test = sc_X.transform(X_test)
+	ii. fields = Final_data.columns.values[:-1]
+		data_clean = pd.DataFrame(sc_X.fit_transform(Final_data[fields]), columns = fields)
+
+4.3 MERGING/CONCATENATING 
+	i.	data_clean = pd.concat([subset_of_loanstatus_1, subset_of_loanstatus_0]) #ROWS
+	ii.	flights = flights.merge(airlines, how = 'left', on = 'carrier') #COLUMNS
+	iii.data_clean['loan_status'] = Final_data['loan_status'] #ADD A COLUMN OF ONE DATAFRAME TO OTHER
+
+
+4.4 SAMPLING
+	i.	subset_of_loanstatus_1 = loanstatus_1.sample(n=5500)
+	ii. data_clean = data_clean.sample(frac=1).reset_index(drop=True)
+
+4.5 GROUP BY 
+	i. carrier_flights = pd.Series(flights.groupby('name')['name'].count()) # A 500		B 200	C 700	D 150
+
+---------------------------------
+5. DATA ANALYSIS STEPS
+---------------------------------
+# Subset to the top 5 airlines
+top_five_flights = flights[flights['name'].isin(top_five)]
+#Sort Series
+carrier_flights = carrier_flights.sort_values(ascending=False)
+
+
+# Know Relation between data
+pearsonr(data['horsepower'], data['price']) # Between -1 and 1 #r2_Score(in %) = pearsonr^2 
+
+
+#correlation coefficient matrix plot 1 #correlation matrix plot 2
+corrmat = dataset.corr()
+plot_Correlation_Coefficient_1(corrmat)
+plot_Correlation_Coefficient_2(corrmat)
+
+
+
+mtcars.mean()                 # Get the mean of each column
+mtcars.mean(axis=1)           # Get the mean of each row
+mtcars.median()                 # Get the median of each column
+---------------------------------
+6. MACHINE LEARNING STEPS
+---------------------------------
+""" REGRESSION """
+from sklearn.linear_model import LinearRegression #Simple Linear Regression
+LinearRegression().fit(train_x,train_y)
+
+import statsmodels.formula.api as sm #Multiple Linear Regression
+sm.OLS(endog = y, exog = X_opt).fit()
+
+from sklearn.preprocessing import PolynomialFeatures #Polynomial Linear Regression
+LinearRegression().fit(PolynomialFeatures(degree = 4).fit_transform(X),y) #L_regressor_2.fit(X_poly,y) -> X_poly = PolynomialFeatures(degree = 4).fit_transform(X)
+
+from sklearn.tree import DecisionTreeRegressor
+DecisionTreeRegressor(random_state = 0).fit(X, y) #Decision Tree Regression CART
+
+from sklearn.ensemble import RandomForestRegressor #Random Forest Regression CART
+RandomForestRegressor(n_estimators = 10, random_state = 0).fit(X, y)
+
+---------------------------------
+7. EVALUATION STEPS
+---------------------------------
+ 
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+mae = mean_absolute_error(y, pred)
+mse = mean_squared_error(y, pred)
+r2  = r2_score(test_y_ , test_y) # Between 0 and 1 #r2_Score(in %) = pearsonr^2 
+
+
+from sklearn.model_selection import learning_curve # learning curve
+train_sizes, train_scores, test_scores = learning_curve(estimator, X, y, cv=cv, n_jobs=n_jobs, train_sizes=train_sizes)
+plot_learning_curve()
+plot_learning_curve_2()
+
+
+# ROC_AUC - https://github.com/Gurubux/Udemy-ML/tree/master/Machine_Learning_A-Z/Part2-Regression/ROC_AUC
+from sklearn.metrics import roc_curve  
+from sklearn.metrics import roc_auc_score  
+from sklearn.metrics import precision_recall_curve
+from sklearn.metrics import f1_score
+from sklearn.metrics import average_precision_score
+from sklearn.metrics import auc
+plotAUC()
+plot_roc_curve()
+
+
+from sklearn.model_selection import cross_val_score # Cross-Validation
+cross_val_score(RandomForestClassifier(n_estimators=10)/LogisticRegression()/svm.SVC(), X, y, scoring='accuracy', cv = 10) # [0.67532468 0.76623377 0.67532468 0.66233766 0.79220779 0.74025974 0.76623377 0.77922078 0.72368421 0.77631579]
+cross_val_score(RandomForestClassifier(n_estimators=10)/LogisticRegression()/svm.SVC(), X, y, scoring='accuracy', cv = 10).mean() * 100 # 74.48051948051948
+
+from sklearn.model_selection import ShuffleSplit# Cross-Validation for Learning Curve
+cv = ShuffleSplit(n_splits=100, test_size=0.2, random_state=0)
+
+from sklearn.metrics import confusion_matrix #Used to calculate Sensitivity, Specificity, Precision and Accuracy
+confusion_matrix(y_true, y_pred) # [[2 1] [2 3]] tn, fp, fn, tp 2 1 2 3
+
+ # calculate AUC
+from sklearn.metrics import roc_auc_score 
+auc = roc_auc_score(testy, probs)
+
+# calculate roc curve
+from sklearn.metrics import roc_curve
+fpr, tpr, thresholds = roc_curve(testy, probs)
+
+# calculate precision-recall curve
+from sklearn.metrics import precision_recall_curve
+precision, recall, thresholds = precision_recall_curve(testy, probs)
+
+# calculate F1 score
+from sklearn.metrics import f1_score
+f1 = f1_score(testy, yhat)
+
+# calculate precision-recall AUC
+from sklearn.metrics import auc
+auc = auc(recall, precision)
+
+# calculate average precision score
+from sklearn.metrics import average_precision_score
+ap = average_precision_score(testy, probs)
+
+
+---------------------------------
+8. VISUALIZATION
+---------------------------------
+8.1 # Histogram of multiple columns
+data = data[['CYLINDERS','ENGINESIZE','CO2EMISSIONS','FUELCONSUMPTION_COMB']]
+data.hist()
+
+8.2 plt.scatter(X_train, y_train, color = 'red') #Plots the points as per given X,Y
+
+8.3 plt.plot(X_train, regressor.predict(X_train), color = 'blue') #Draws a line through the X,Y points
+
+8.4 #Plotting Learning Curve
+plot_learning_curve()
+plot_learning_curve_2()
+
+
+8.5 #Plotting Correlation Coefficients
+corr = data_clean.corr()
+plot_Correlation_Coefficient_1(corr) # https://github.com/Gurubux/ML-Analysis-Steps/tree/master/Correlation_Coefficient
+plot_Correlation_Coefficient_2(corr) 
+
+
+8.6 #Visualizing Confusion matrix 
+plot_confusion_matrix() #https://github.com/Gurubux/Udemy-ML/tree/master/Machine_Learning_A-Z/Part2-Regression/Confusion-Matrix
+plot_confusion_matrix2() 
+
+8.7 # Descriptive Statistics Plotting
+	#plotting Curve on the data spread
+	norm_data = pd.DataFrame(np.random.normal(size=100000))
+	norm_data.plot(kind="density",figsize=(10,10))
+	skewed_data = pd.DataFrame(np.random.exponential(size=100000))
+	skewed_data.plot(kind="density",figsize=(10,10),xlim=(-1,5))
+
+
+ 	# Plot black line at mean
+ 	plt.vlines(norm_data.mean(),ymin=0, ymax=0.4,linewidth=5.0)
+
+ 	#Box Plot
+ 	mtcars.boxplot(column="mpg",return_type='axes',figsize=(8,8))
+
+	plt.text(x=0.74, y=22.25, s="3rd Quartile")
+	plt.text(x=0.8, y=18.75, s="Median")
+	plt.text(x=0.75, y=15.5, s="1st Quartile")
+	plt.text(x=0.9, y=10, s="Min")
+	plt.text(x=0.9, y=33.5, s="Max")
+	plt.text(x=0.7, y=19.5, s="IQR", rotation=90, size=25)
+
+8.8 #ROC AUC Curve
+plotAUC()
+plot_roc_curve()
+
+---------------------------------
+9. STORY TELLING
+---------------------------------
+
+
+--------------------------
+MISCELLANEOUS
+----------------------------
+# get column and convert it to numpy array
+x = dataframe_all.iloc[:,:-1].values
+
+#Series Filtering
+counter_without_nan = counter_nan[counter_nan==0]
+
+# get column names
+column_names = dataframe.columns.values[:-1]
+
+ #counts of unique values.
+count_unique_values = dataframe['column_name'].value_counts()
