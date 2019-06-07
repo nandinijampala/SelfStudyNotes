@@ -12,7 +12,6 @@
 1. IMPORTING LIBRARIES
 ---------------------------------
 import numpy as np
-import matplotlib.pyplot as plt
 import pandas as pd
 from sklearn.preprocessing import Imputer
 from sklearn.preprocessing import LabelEncoder,OneHotEncoder
@@ -23,6 +22,9 @@ import statsmodels.formula.api as sm
 from sklearn.preprocessing import PolynomialFeatures
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.ensemble import RandomForestRegressor
+
+import matplotlib.pyplot as plt
+import seaborn as sns
 ---------------------------------
 2. IMPORTING DATA(CSV, TXT ETC.)
 ---------------------------------
@@ -95,7 +97,7 @@ y = dataset.iloc[:, 2].values # Should always be a vector, (n,)
 	Final_data["emp_length"] = Final_data["emp_length"].apply(lambda x:int(x))
 	Final_data[“emp_length”] = Final_data[“emp_length”].apply(lambda x:pd.to_numeric(x, downcast=’integer’))
 ------------------------------------------------------
-4. SPLITTING/MERGING/SAMPLING/BOOTSTRAPPING/SCALING/GROUPING ETC.
+4. SPLITTING/MERGING/SAMPLING/BOOTSTRAPPING/SCALING/GROUPING/FILTERING ETC.
 ------------------------------------------------------
 4.1 SPLITTING THE DATASET INTO THE TRAINING SET AND TEST SET
 	X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 0)
@@ -146,6 +148,39 @@ plot_Correlation_Coefficient_2(corrmat)
 mtcars.mean()                 # Get the mean of each column
 mtcars.mean(axis=1)           # Get the mean of each row
 mtcars.median()                 # Get the median of each column
+
+#T-Test CDF PPF PDF interval z-Score 1-sample, 2-sample, pair
+#https://github.com/Gurubux/ML-Analysis-Steps/blob/master/InferentialStatistics/HypothesisTestingAndTheT-Test/HypothesisTestingAndTheT_Test_ConfidenceInterval.ipynb
+#ONE group t-test Sample vs Population
+stats.ttest_1samp(a= minnesota_ages,               # Sample data
+                 popmean= population_ages.mean())  # Pop mean
+stats.t.ppf(q=0.025,  # Quantile to check
+            df=99)  # Degrees of freedom
+stats.t.ppf(q=0.975,  # Quantile to check
+            df=99)  # Degrees of freedom
+stats.t.cdf(x= -3.02424,      # T-test statistic
+               df= 99) * 2   # Mupltiply by two for two tailed test*
+stats.t.interval(0.95,                        # Confidence level
+                 df = 99,                     # Degrees of freedom
+                 loc = minnesota_ages.mean(), # Sample mean
+                 scale= sigma)                # Standard dev estimate
+stats.t.interval(alpha = 0.99,                # Confidence level
+                 df = 99,                     # Degrees of freedom
+                 loc = minnesota_ages.mean(), # Sample mean
+                 scale= sigma)                # Standard dev estimate
+draw_z_score(x, (z0 < x) & (x < z1),np.mean(sample_means), np.std(sample_means), '-0.75<z<0.75')
+sample_means = normal_curve_confidence_shade(population_ages,minnesota_ages,100)
+
+# Two-Sample T-Test
+stats.ttest_ind(a= minnesota_ages, 
+                b= wisconsin_ages,
+                equal_var=False)    # Assume samples have equal variance?
+
+# TWO RELATED  Paired T-test
+stats.ttest_rel(a = before, 
+                b = after)
+
+
 ---------------------------------
 6. MACHINE LEARNING STEPS
 ---------------------------------
@@ -230,9 +265,31 @@ ap = average_precision_score(testy, probs)
 ---------------------------------
 8. VISUALIZATION
 ---------------------------------
-8.1 # Histogram of multiple columns
+8.1 # Histogram of Single/multiple columns using pandas,matplotlib, seaborn, plotly
 data = data[['CYLINDERS','ENGINESIZE','CO2EMISSIONS','FUELCONSUMPTION_COMB']]
 data.hist()
+plt.hist(flights['arr_delay'], color = 'blue', edgecolor = 'black',
+         bins = int(180/5))
+#seaborn hist=True
+sns.distplot(flights['arr_delay'], hist=True, kde=False, 
+             bins=int(180/5), color = 'blue',
+             hist_kws={'edgecolor':'black'})
+#plotly
+data = [go.Histogram(x=flights['arr_delay'],
+                     xbins=dict(
+                            start=min(flights['arr_delay']),
+                            end=max(flights['arr_delay']),
+                            size=5
+                        ),#or nbinsx=36
+                     marker = dict(
+                         line = dict(
+                             color = "black",
+                                width = 1
+                         )
+                     ))]
+py.iplot(data, filename='basic histogram')
+# More types of histograms 
+# https://github.com/Gurubux/Data-Lit/blob/master/2-StatisticsAndProbability/2.5-Homework_Airlines/airlines_least_delay_new.ipynb
 
 8.2 plt.scatter(X_train, y_train, color = 'red') #Plots the points as per given X,Y
 
@@ -254,11 +311,14 @@ plot_confusion_matrix() #https://github.com/Gurubux/Udemy-ML/tree/master/Machine
 plot_confusion_matrix2() 
 
 8.7 # Descriptive Statistics Plotting
-	#plotting Curve on the data spread
+	#plotting Curve on the data spread - matplotlib
 	norm_data = pd.DataFrame(np.random.normal(size=100000))
 	norm_data.plot(kind="density",figsize=(10,10))
 	skewed_data = pd.DataFrame(np.random.exponential(size=100000))
 	skewed_data.plot(kind="density",figsize=(10,10),xlim=(-1,5))
+
+	#plotting Curve on the data spread - Seaborn - matplotlib #kde=False
+	sns.distplot(flights['arr_delay'], hist=True, kde=False, bins=int(180/5), color = 'blue', hist_kws={'edgecolor':'black'})
 
 
  	# Plot black line at mean
@@ -278,6 +338,10 @@ plot_confusion_matrix2()
 plotAUC()
 plot_roc_curve()
 
+8.9 #Draw Confidence level for Normal Curve, Z-Score -  CDF PDF PPF
+draw_z_score(x, x<z0, 0, 1, 'z<-0.75')
+sample_means = normal_curve_confidence_shade(population_ages,minnesota_ages,100)
+#https://github.com/Gurubux/ML-Analysis-Steps/blob/master/InferentialStatistics/HypothesisTestingAndTheT-Test/HypothesisTestingAndTheT-Test.txt https://github.com/Gurubux/ML-Analysis-Steps/blob/master/InferentialStatistics/HypothesisTestingAndTheT-Test/HypothesisTestingAndTheT_Test_ConfidenceInterval.ipynb
 ---------------------------------
 9. STORY TELLING
 ---------------------------------
@@ -291,9 +355,32 @@ x = dataframe_all.iloc[:,:-1].values
 
 #Series Filtering
 counter_without_nan = counter_nan[counter_nan==0]
+#Dataframe Filtering
+flights = flights[flights['arr_delay'].between(-60, 120)]
 
 # get column names
 column_names = dataframe.columns.values[:-1]
 
  #counts of unique values.
 count_unique_values = dataframe['column_name'].value_counts()
+
+#PDF PPF CDF Normal Distribution
+vals = stats.norm.ppf([0.001, 0.5, 0.999])
+>>>array([-3.09023231,  0.        ,  3.09023231])
+np.allclose([0.001, 0.5, 0.999], stats.norm.cdf(vals))
+
+stats.norm.cdf(vals)
+>>>array([0.001, 0.5  , 0.999])
+stats.norm.pdf(vals)
+>>>array([0.00336709, 0.39894228, 0.00336709])
+stats.norm.pdf(vals,loc=3, scale=2) #loc = mean scale = std
+>>>array([0.00193344, 0.0647588 , 0.19926823])
+
+
+#GoogleDrive Mount
+from google.colab import drive 
+drive.mount('/content/gdrive')
+
+#To open Interactive notebooks
+https://nbviewer.jupyter.org
+# "https://nbviewer.jupyter.org/github/llSourcell/Data_Visualization/blob/master/Plotly%20Whirlwind%20Introduction-Extended.ipynb"
