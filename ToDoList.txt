@@ -4,3 +4,11 @@
 4. Draw Confidence interval around a curve
 5. Why is regr.coef_[0][0] a matrix
 6. Hyperparameter optimization. - RandomizedSearchCV, GridSearchCV
+7. ludwig
+8. Data School
+	https://www.youtube.com/user/dataschool/playlists?view=50&sort=dd&shelf_id=4
+	Linear Regression - https://www.youtube.com/playlist?list=PL5-da3qGB5IBSSCPANhTgrw82ws7w_or9
+	Classification - https://www.youtube.com/playlist?list=PL5-da3qGB5IC4vaDba5ClatUmFppXLAhE
+	Regularization - https://www.youtube.com/playlist?list=PL5-da3qGB5IB-Xdpj_uXJpLGiRfv9UVXI
+	ML in Python - https://www.youtube.com/playlist?list=PL5-da3qGB5ICeMbQuqbbCOQWcS6OYBr5A
+	Pandas - https://github.com/justmarkham/pandas-videos

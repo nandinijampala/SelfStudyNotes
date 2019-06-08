@@ -200,6 +200,9 @@ DecisionTreeRegressor(random_state = 0).fit(X, y) #Decision Tree Regression CART
 from sklearn.ensemble import RandomForestRegressor #Random Forest Regression CART
 RandomForestRegressor(n_estimators = 10, random_state = 0).fit(X, y)
 
+from scipy.optimize import curve_fit
+popt, pcov = curve_fit(sigmoid, xdata, ydata)
+
 ---------------------------------
 7. EVALUATION STEPS
 ---------------------------------
@@ -342,6 +345,9 @@ plot_roc_curve()
 draw_z_score(x, x<z0, 0, 1, 'z<-0.75')
 sample_means = normal_curve_confidence_shade(population_ages,minnesota_ages,100)
 #https://github.com/Gurubux/ML-Analysis-Steps/blob/master/InferentialStatistics/HypothesisTestingAndTheT-Test/HypothesisTestingAndTheT-Test.txt https://github.com/Gurubux/ML-Analysis-Steps/blob/master/InferentialStatistics/HypothesisTestingAndTheT-Test/HypothesisTestingAndTheT_Test_ConfidenceInterval.ipynb
+
+8.10 #Non-Linear Curve Plotting
+#https://github.com/Gurubux/CognitiveClass-ML/blob/master/Course/3-Regression/3.6Non-LinearRegression/CC_3_6_NonLinearRegression.ipynb
 ---------------------------------
 9. STORY TELLING
 ---------------------------------
