@@ -181,6 +181,16 @@ stats.ttest_rel(a = before,
                 b = after)
 
 
+
+# Building Model - Backward Elimination
+SL = 0.05
+X_opt = X[:, [0, 1, 2, 3, 4, 5]]
+X_Modeled = backwardElimination_1(X_opt, SL)
+
+SL = 0.05
+X_opt = X[:, [0, 1, 2, 3, 4, 5]]
+X_Modeled = backwardElimination_2(X_opt, SL)
+
 ---------------------------------
 6. MACHINE LEARNING STEPS
 ---------------------------------
@@ -193,6 +203,9 @@ sm.OLS(endog = y, exog = X_opt).fit()
 
 from sklearn.preprocessing import PolynomialFeatures #Polynomial Linear Regression
 LinearRegression().fit(PolynomialFeatures(degree = 4).fit_transform(X),y) #L_regressor_2.fit(X_poly,y) -> X_poly = PolynomialFeatures(degree = 4).fit_transform(X)
+
+from sklearn.svm import SVR
+regressor = SVR(kernel = 'rbf') # ['rbf', 'linear', 'poly']
 
 from sklearn.tree import DecisionTreeRegressor
 DecisionTreeRegressor(random_state = 0).fit(X, y) #Decision Tree Regression CART

@@ -1,6 +1,7 @@
 1. Normal curve in python and measuring the probability. Histogram
 2. Computing P-Value
-3. Fitting a curve using line and a parabola
+3. Fitting a curve using line and a parabola- Python 
+	- "https://github.com/Gurubux/StatQuest/blob/master/Fitting_A_Curve/StatQuest_FITTING_A_CURVE.R"
 4. Draw Confidence interval around a curve
 5. Why is regr.coef_[0][0] a matrix
 6. Hyperparameter optimization. - RandomizedSearchCV, GridSearchCV
@@ -12,3 +13,7 @@
 	Regularization - https://www.youtube.com/playlist?list=PL5-da3qGB5IB-Xdpj_uXJpLGiRfv9UVXI
 	ML in Python - https://www.youtube.com/playlist?list=PL5-da3qGB5ICeMbQuqbbCOQWcS6OYBr5A
 	Pandas - https://github.com/justmarkham/pandas-videos
+
+9. [2] The condition number is large, 1.49e+06. This might indicate that there are strong multicollinearity or other numerical problems.
+	regressor_OLS.summary()
+	https://github.com/Gurubux/Udemy-ML/blob/master/Machine_Learning_A-Z/Part2-Regression/Section5-Multiple_Linear_Regression/U_5_MultipleLinearRegression_WithBackwardElimination.ipynb
