@@ -1,0 +1,27 @@
+LinearRegressionDiagnosticPlots.odt
+Diagnostic Plots
+	-residplot
+	-probplot
+
+ 1. https://zhiyzuo.github.io/Linear-Regression-Diagnostic-in-Python/ 
+ 2. https://medium.com/@neuralnets/statistical-data-visualization-series-with-python-and-seaborn-for-data-science-5a73b128851d 
+ 3. https://medium.com/@emredjan/emulating-r-regression-plots-in-python-43741952c034 
+ 4. https://robert-alvarez.github.io/2018-06-04-diagnostic_plots/ 
+
+----------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------
+https://www.youtube.com/user/jbstatistics/videos
+Outliers, Leverage, Influence  -  https://www.youtube.com/watch?v=xc_X9GFVuVU
+Leverage = 1/n + (xᵢ - x̄ )/(TSS)
+Influence = Cook`s distance
+
+
+----------------------------------------------------------------------------------------------------------------------------------------
+Regression Overview with "ASSUMPTIONS" Explained
+http://www.zstatistics.com/regression
+http://www.zstatistics.com/videos
+
+----------------------------------------------------------------------------------------------------------------------------------------
+https://www.analyticsvidhya.com/blog/2016/12/45-questions-to-test-a-data-scientist-on-regression-skill-test-regression-solution/
+R-Squared vs Adjusted R-Squared
+“R squared” individually can’t tell whether a variable is significant or not because each time when we add a feature, “R squared” can either increase or stay constant. But, it is not true in case of “Adjusted R squared” (increases when features found to be significant).

@@ -1,0 +1,4 @@
+1. 
+"Issue " 	    :	ImportError: cannot import name 'factorial'
+"Issue Raised"	:   https://github.com/googlecolab/colabtools/issues/582
+"Solution  "	:	!pip install scipy==1.2 (Temporary Solution)
