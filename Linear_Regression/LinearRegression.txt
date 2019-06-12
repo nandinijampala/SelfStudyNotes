@@ -3,25 +3,70 @@ Diagnostic Plots
 	-residplot
 	-probplot
 
- 1. https://zhiyzuo.github.io/Linear-Regression-Diagnostic-in-Python/ 
- 2. https://medium.com/@neuralnets/statistical-data-visualization-series-with-python-and-seaborn-for-data-science-5a73b128851d 
- 3. https://medium.com/@emredjan/emulating-r-regression-plots-in-python-43741952c034 
- 4. https://robert-alvarez.github.io/2018-06-04-diagnostic_plots/ 
+ 1. "https://zhiyzuo.github.io/Linear-Regression-Diagnostic-in-Python/ "
+ 2. "https://medium.com/@neuralnets/statistical-data-visualization-series-with-python-and-seaborn-for-data-science-5a73b128851d "
+ 3. "https://medium.com/@emredjan/emulating-r-regression-plots-in-python-43741952c034 "
+ 4. "https://robert-alvarez.github.io/2018-06-04-diagnostic_plots/ "
 
 ----------------------------------------------------------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------------------------------------------
-https://www.youtube.com/user/jbstatistics/videos
+"https://www.youtube.com/user/jbstatistics/videos"
 Outliers, Leverage, Influence  -  https://www.youtube.com/watch?v=xc_X9GFVuVU
 Leverage = 1/n + (xᵢ - x̄ )/(TSS)
-Influence = Cook`s distance
+Influence = \Cook`s distance
 
 
 ----------------------------------------------------------------------------------------------------------------------------------------
-Regression Overview with "ASSUMPTIONS" Explained
-http://www.zstatistics.com/regression
-http://www.zstatistics.com/videos
-
+Regression Overview with \"ASSUMPTIONS" Explained
+"http://www.zstatistics.com/regression"
+"http://www.zstatistics.com/videos"
+1.	The true relationship between dependent y and predictor x is linear
+2.	The model errors are statistically independent
+3.	The errors are normally distributed with a 0 mean and constant standard deviation
+4.	The predictor x is non-stochastic and is measured error-free
+When deriving regression parameters, we make all the four assumptions mentioned above. If any of the assumptions is violated, the model would be misleading.
 ----------------------------------------------------------------------------------------------------------------------------------------
-https://www.analyticsvidhya.com/blog/2016/12/45-questions-to-test-a-data-scientist-on-regression-skill-test-regression-solution/
-R-Squared vs Adjusted R-Squared
+"https://www.analyticsvidhya.com/blog/2016/12/45-questions-to-test-a-data-scientist-on-regression-skill-test-regression-solution/"
+@ R-Squared vs Adjusted R-Squared
 “R squared” individually can’t tell whether a variable is significant or not because each time when we add a feature, “R squared” can either increase or stay constant. But, it is not true in case of “Adjusted R squared” (increases when features found to be significant).
+Each time when you add a feature, R squared always either increase or stays constant, but it is not true in case of Adjusted R squared. If it increases, the feature would be significant.
+
+@ We always consider residual as vertical offsets. Perpendicular offset are useful in case of PCA.
+
+@ Big feature values ⇒ smaller coefficients ⇒ less lasso penalty =⇒ more likely to have be kept
+
+@ Ridge regression will use all predictors in final model whereas Lasso regression can be used for feature selection because coefficient values can be zero. For more detail ''https://discuss.analyticsvidhya.com/t/difference-between-ridge-regression-and-lasso-and-its-effect/3000'
+
+@ R Squared, Adjusted R Squared, RMSE / MSE / MAE, \f statistics for regression
+
+@ We can also compute the coefficient of linear regression with the help of an analytical method called NORMAL EQUATION. In it :
+	-	We don’t have to choose the learning rate
+	-	It becomes slow when number of features is very large
+	-	No need to iterate
+	Normal Equation vs Gradient Descent
+		Gradient Descent:
+	-	need to choose learning rate α
+	-	need to do many iterations
+	-	works well with large n
+		
+	Normal Equation:
+	-	don`t need to choose α
+	-	don`t need to iterate - computed in one step
+	-	slow if n is large (n⩾104)
+	-	need to compute (XTX)−1 - very slow
+		if (XTX) is not-invertible - we have problems
+
+"https://stattrek.com/multiple-regression/regression-coefficients.aspx"
+@ Simple Linear Regression
+	ŷ = b0 + b1x
+	b1 = Σ [ (xi - x)(yi - y) ] / Σ [ (xi - x)2]
+	b0 = y - b1 * x
+
+
+@ Multiple Linear Regression
+	ŷ = b0 + b1x1 + b2x2 + … + bk-1xk-1 + bkxk
+	Y = Xb
+	X`Y = X`Xb 
+		Here, matrix X` is the transpose of matrix X. To solve for regression coefficients, simply pre-multiply by the inverse of X`X:
+	(X`X)-1X`Xb = (X`X)-1X`Y
+	b 			= (X`X)-1X`Y
