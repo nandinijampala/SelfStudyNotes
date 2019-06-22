@@ -49,7 +49,7 @@ Each time when you add a feature, R squared always either increase or stays cons
 	-	need to do many iterations
 	-	works well with large n
 		
-	Normal Equation:
+		Normal Equation:
 	-	don`t need to choose α
 	-	don`t need to iterate - computed in one step
 	-	slow if n is large (n⩾104)
@@ -70,3 +70,68 @@ Each time when you add a feature, R squared always either increase or stays cons
 		Here, matrix X` is the transpose of matrix X. To solve for regression coefficients, simply pre-multiply by the inverse of X`X:
 	(X`X)-1X`Xb = (X`X)-1X`Y
 	b 			= (X`X)-1X`Y
+"https://eli.thegreenplace.net/2014/derivation-of-the-normal-equation-for-linear-regression/"
+
+
+@ The expected value of Y is a linear function of the X(X1,X2….Xn) variables and regression line is defined as:
+	Y = β0 +  β1 X1 + β2 X2……+ βn Xn
+
+	1.The expected value of Y is a linear function of the X variables. This means:
+        1. If X i changes by an amount ∆X i , holding other variables fixed, then the expected value of Y changes by a proportional amount β i ∆X i , for some constant β i (which in general could be a positive or negative number).
+        2. The value of β i is always the same, regardless of values of the other X’s.
+        3. The total effect of the X’s on the expected value of Y is the sum of their separate effects.
+    2. The unexplained variations of Y are independent random variables (in particular, not “auto correlated” if the variables are time series)
+    3. They all have the same variance (“homoscedasticity”).
+    4. They are normally distributed.
+
+@ In simple linear regression there is one independent variable so 2 coefficients (Y=a+bx).
+
+@ SUM OF RESIDUALS ALWAYS ZERO.
+
+@ If two variables are correlated is it necessary that they have a linear relationship? NO 
+
+@ Correlated variables can have zero correlation coeffficient
+"https://stats.stackexchange.com/questions/179511/why-zero-correlation-does-not-necessarily-imply-independence"
+
+@ Adding more FEATURES to model will always increase the training accuracy i.e. low bias. But testing accuracy increases if feature is found to be significant.
+
+@ Symmetric relationship : CORRELATION vs REGRESSION
+ ✔   1. Correlation is a statistic metric that measures the linear association between two variables. It treats y and x symmetrically.
+ ✖   2. Regression is setup to predict y from x. The relationship is not symmetric.
+
+@ Skewness
+  The skewness is not directly related to the relationship between the mean and median.
+  Skewness measures the skew or asymmetry of a distribution while kurtosis measures the "peakedness" of a distribution. 
+
+@ Anscombes quartet
+  "https://en.wikipedia.org/wiki/Anscombe's_quartet"
+  Francis John Frank Anscombe
+
+@ RIDGE REGRESSION
+	Suppose you have fitted a complex regression model on a dataset. Now you are using RIDGE REGRESSION with tuning parameter lambda to reduce its complexity. Choose the option(s) below which describes relationship of bias and variance with lambda.
+			If lambda is very large it means model is less complex. So in this case bias is high and variance in low.
+			If lambda is very small it means model is complex.So in this case bias is low and variance is high because model will overfit the data.
+	Specifically, we can see that when lambda is 0, we get our least square solution. When lambda goes to infinity, we get very, very small coefficients approaching 0.
+
+@ Residual plots
+	Q38
+	There should not be any relationship between predicted values and residuals. If there exist any relationship between them means model has not perfectly capture the information in data.
+	LinearRegressionDiagnosticPlots.odt
+
+@ Closed form solutions
+  The Lasso does not admit a closed-form solution. The L1-penalty makes the solution non-linear. So we need to approximate the solution.
+  "http://statweb.stanford.edu/~tibs/sta305files/Rudyregularization.pdf"
+
+@ If we change the input variable by one unit. How much output variable will change?
+  Equation for simple linear regression: Y=a+bx. Now if we increase the value of x by 1 then the value of y would be a+b(x+1) i.e. value of y will get incremented by b.
+
+@ Sigmoid function is used to convert output probability between [0,1] in logistic regression.
+
+@ Partial derivative of the cost functions w.r.t weights(coefficients) in linear-regression and logistic-regression is "SAME"
+
+@ One_vs_rest method One-vs-rest method
+  If there are n classes, then n separate logistic regression has to fit, where the probability of each category is predicted over the rest of the categories combined.
+  Take a example of 3-class(-1,0,1) classification. Then need to train 3 logistic regression classifiers.
+   	-1 vs  0 and 1
+   	 0 vs -1 and 1
+   	 1 vs  0 and -1
