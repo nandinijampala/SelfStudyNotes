@@ -33,9 +33,12 @@ Each time when you add a feature, R squared always either increase or stays cons
 
 @ We always consider residual as vertical offsets. Perpendicular offset are useful in case of PCA.
 
-@ Big feature values ⇒ smaller coefficients ⇒ less lasso penalty =⇒ more likely to have be kept
+@ Lasso Regression
+	Q16. Suppose we fit “Lasso Regression” to a data set, which has 100 features (X1,X2…X100).  Now, we rescale one of these feature by multiplying with 10 (say that feature is X1),  and then refit Lasso regression with the same regularization parameter.
+	Big feature values ⇒ smaller coefficients ⇒ less lasso penalty =⇒ more likely to be kept
 
-@ Ridge regression will use all predictors in final model whereas Lasso regression can be used for feature selection because coefficient values can be zero. For more detail ''https://discuss.analyticsvidhya.com/t/difference-between-ridge-regression-and-lasso-and-its-effect/3000'
+@ Ridge regression will use all predictors in final model whereas Lasso regression can be used for feature selection because coefficient values can be zero. For more detail 
+	'https://discuss.analyticsvidhya.com/t/difference-between-ridge-regression-and-lasso-and-its-effect/3000'
 
 @ R Squared, Adjusted R Squared, RMSE / MSE / MAE, \f statistics for regression
 
@@ -43,7 +46,7 @@ Each time when you add a feature, R squared always either increase or stays cons
 	-	We don’t have to choose the learning rate
 	-	It becomes slow when number of features is very large
 	-	No need to iterate
-	Normal Equation vs Gradient Descent
+	"NORMAL EQUATION VS GRADIENT DESCENT"
 		Gradient Descent:
 	-	need to choose learning rate α
 	-	need to do many iterations
