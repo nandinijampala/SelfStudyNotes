@@ -13,7 +13,7 @@ Anaconda<br>
 labs.cognitiveclass.ai<br>
 GraphLab Turi<br>
 Bokeh<br>
-Plotly<br>
+Plotly<br><br>
 
 
 <strong>BlockChain</strong><br>
