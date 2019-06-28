@@ -50,7 +50,9 @@ y = dataset.iloc[:, 2].values # Should always be a vector, (n,)
 		imputer = imputer.fit(X[:, 1:3])
 		X[:, 1:3] = imputer.transform(X[:, 1:3])
 	ii. Final_data.fillna(Final_data.mean(),inplace = True)
-	iii.counter_nan = dataframe_all.isnull().sum() #Count nuumber of null or nan in each column and display Series of column nam and counter_nan
+				DF.fillna(dict) # dict = {0: 0.1, 5: 1.25} # fill column 0 NAs with 0.1 and column 5 NAs with 1.25
+				DF.fillna(method='ffill') #will fill-forward any missing values with values from the last non-null element in the column
+	iii.counter_nan = dataframe_all.isnull().sum() #Count number of null or nan in each column and display Series of column nam and counter_nan # Count missing values
 
 3.2 CATEGORICAL DATA
 	#Encode Text(France/Spain/Germany , Yes/No) into numbers(0/1/2 , 0/1)
@@ -81,21 +83,32 @@ y = dataset.iloc[:, 2].values # Should always be a vector, (n,)
 	dataset = dataset.drop(dataset.columns[empty_cols],axis=1)
 
 	del_col_names = ["delinq_2yrs",  "last_pymnt_d", "chargeoff_within_12_mths","delinq_amnt","emp_title", "term", "emp_title",	"pymnt_plan","purpose","title", "zip_code", "verification_status", "dti","earliest_cr_line", "initial_list_status", "out_prncp", "pymnt_plan", "num_tl_90g_dpd_24m", "num_tl_30dpd", "num_tl_120dpd_2m", "num_accts_ever_120_pd", "delinq_amnt",  "chargeoff_within_12_mths", "total_rec_late_fee", "out_prncp_inv", "issue_d"] #deleting some more columns
-	dataset = dataset.drop(labels = del_col_names, axis = 1) 
+	dataset = dataset.drop(labels = del_col_names, axis = 1) # DF_obj.drop([0,2]) ROWS #DF_obj.drop([0,2], axis=1) COLUMNS
 
 	dataset=Dataset_withBoolTarget.dropna(thresh = 340000,axis=1) #340000 is minimum number of non-NA values, Removing all columns having more than 340000 Nan values
 	dataset.dropna(subset=['price', 'horsepower'], inplace=True)
-
+	dataset.dropna(axis=1) # Drop any columns with missing values. DEFAULT axis = 0
 	# drop(), dropna()
 
 3.4 REMOVING ROWS
-	dataset = dataset.dropna(axis=0) # Remove any rows with missing values.
+	dataset = dataset.dropna(axis=0) # Drop any rows with missing values. DEFAULT axis = 0
 
 	dataset = dataset[dataset["column_name"] > 0] # Remove any rows without following condition
-	
+	dataset.dropna(how='all') # drop only the rows from a DataFrame that contain ALL missing values
+
+
 3.5 CONVERTING TYPE OF COLUMN
 	Final_data["emp_length"] = Final_data["emp_length"].apply(lambda x:int(x))
 	Final_data[“emp_length”] = Final_data[“emp_length”].apply(lambda x:pd.to_numeric(x, downcast=’integer’))
+
+3.6 SLICING DATA
+	series_obj['row 3':'row 7']
+	series_obj[2:7]
+
+3.7 REMOVING DUPLICATES
+	dataset.duplicated() # The .duplicated() method searches each row in the DataFrame, and returns a True or False value to indicate whether it is a duplicate of another row found earlier in the DataFrame.
+	dataset.drop_duplicates() # To drop all duplicate rows, just call the drop_duplicates() method off of the DataFrame.
+	dataset.drop_duplicates(['column 3']) # This method will drops all rows that have duplicates in the column you specify.
 ------------------------------------------------------
 4. SPLITTING/MERGING/SAMPLING/BOOTSTRAPPING/SCALING/GROUPING/FILTERING ETC.
 ------------------------------------------------------
@@ -112,11 +125,13 @@ y = dataset.iloc[:, 2].values # Should always be a vector, (n,)
 	ii. fields = Final_data.columns.values[:-1]
 		data_clean = pd.DataFrame(sc_X.fit_transform(Final_data[fields]), columns = fields)
 
-4.3 MERGING/CONCATENATING 
-	i.	data_clean = pd.concat([subset_of_loanstatus_1, subset_of_loanstatus_0]) #ROWS
+4.3 MERGING/CONCATENATING/JOINING/APPENDING
+	i.	data_clean = pd.concat([subset_of_loanstatus_1, subset_of_loanstatus_0]) #ROWS pd.concat([DF_obj_!, DF_obj_2], axis =1) #COLUMNS
 	ii.	flights = flights.merge(airlines, how = 'left', on = 'carrier') #COLUMNS
-	iii.data_clean['loan_status'] = Final_data['loan_status'] #ADD A COLUMN OF ONE DATAFRAME TO OTHER
-
+	iii.data_clean['loan_status'] = Final_data['loan_status'] #ADD A COLUMN OF ONE DATAFRAME TO OTHER 
+	iv. DF_obj_variable_added = DataFrame.join(DF_obj, series_obj) #ADD A COLUMN
+	v. added_datatable = variable_added.append(variable_added, ignore_index=False)# index 0 1 2 3 4 5 0 1 2 3 4  5
+		added_datatable = variable_added.append(variable_added, ignore_index=True)# index 0 1 2 3 4 5 6 7 8 9 10 11
 
 4.4 SAMPLING
 	i.	subset_of_loanstatus_1 = loanstatus_1.sample(n=5500)
@@ -124,14 +139,15 @@ y = dataset.iloc[:, 2].values # Should always be a vector, (n,)
 
 4.5 GROUP BY 
 	i. carrier_flights = pd.Series(flights.groupby('name')['name'].count()) # A 500		B 200	C 700	D 150
-
+	ii.cars_groups = cars.groupby(cars['cyl'])
+		cars_groups.mean()
 ---------------------------------
 5. DATA ANALYSIS STEPS
 ---------------------------------
 # Subset to the top 5 airlines
 top_five_flights = flights[flights['name'].isin(top_five)]
 #Sort Series
-carrier_flights = carrier_flights.sort_values(ascending=False)
+carrier_flights = carrier_flights.sort_values(ascending=False) #.sort_values(by=[5], ascending=[False]) # 5 is the column index
 
 
 # Know Relation between data
