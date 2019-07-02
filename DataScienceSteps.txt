@@ -50,6 +50,11 @@ y = dataset.iloc[:, 2].values # Should always be a vector, (n,)
 
 raw_data = urllib.request.urlopen(url)
 dataset = np.loadtxt(raw_data, delimiter=",")
+
+import zipfile
+zipfile.ZipFile('names.zip').extractall('.')
+names2011 = pd.read_csv('names/yob2011.txt',names=['name','sex','number'])
+
 ------------------------------------------------------------------
 3. PREPROCESSING - SCALING, CENTERING, NORMALIZING, BINNING, IMPUTING
 ------------------------------------------------------------------
@@ -581,3 +586,8 @@ with open('model.pickle', 'wb') as out:
     pickle.dump(pipe, out)
 with open('model.pickle', 'rb') as fp
     print(fp.readlines())
+
+SAVE AND LOAD NUMPY
+np.save('example.npy',a)
+
+a1 = np.load('example.npy')
