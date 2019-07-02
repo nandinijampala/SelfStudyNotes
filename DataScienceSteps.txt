@@ -268,6 +268,15 @@ RandomForestRegressor(n_estimators = 10, random_state = 0).fit(X, y)
 from scipy.optimize import curve_fit
 popt, pcov = curve_fit(sigmoid, xdata, ydata)
 
+from sklearn.pipeline import Pipeline
+pipe = Pipeline([
+    ('scale', StandardScaler()),
+    ('pca', PCA(n_components=5)),
+    ('svr', SVR()),
+])
+
+
+
 ---------------------------------
 7. EVALUATION STEPS
 ---------------------------------
@@ -333,6 +342,9 @@ ap = average_precision_score(testy, probs)
 from sklearn.metrics import accuracy_score
 accuracy_score(y_expect, y_pred)
 
+
+pipe.fit(X_train, y_train)
+pipe.score(X_test, y_test)
 ---------------------------------
 8. VISUALIZATION
 ---------------------------------
@@ -397,6 +409,7 @@ plot_confusion_matrix2()
 
  	#Box Plot
  	mtcars.boxplot(column="mpg",return_type='axes',figsize=(8,8))
+ 	speed1m.plot.box()
 
 	plt.text(x=0.74, y=22.25, s="3rd Quartile")
 	plt.text(x=0.8, y=18.75, s="Median")
@@ -434,6 +447,9 @@ plt.pie(list(cars['cyl'].value_counts()))
 8.13 #Defining elements of a plot
 #Defining axes, ticks, limitis, xlim, ylim, grids, subplots, xlabel, ylabel , legend, annotate
 rcParams['figure.figsize'] = 8, 4
+plt.style.use('seaborn-whitegrid')
+import matplotlib.pyplot as plt
+plt.rcParams['figure.figsize'] = (20,6)
 plt.style.use('seaborn-whitegrid')
 
 fig = plt.figure()
@@ -557,3 +573,11 @@ df_export.to_json('data/output/YearlyProductSalesTotals.json', orient='records')
 
 # export to excel, check excel file when finished
 df_export.to_excel('data/output/YearlyProductSalesTotals.xlsx', header=True, index=False)
+
+
+SAVE AND LOAD MODELS
+import pickle
+with open('model.pickle', 'wb') as out:
+    pickle.dump(pipe, out)
+with open('model.pickle', 'rb') as fp
+    print(fp.readlines())
