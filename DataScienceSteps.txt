@@ -100,7 +100,9 @@ names2011 = pd.read_csv('names/yob2011.txt',names=['name','sex','number'])
 		X = onehotencoder.fit_transform(X).toarray()
 
 	iv. Final_data[`grade`] = Final_data[`grade`].map({`A`:7,`B`:6,`C`:5,`D`:4,`E`:3,`F`:2,`G`:1})# convert Categorical text to a number
-	# map(), 
+		haiti.index = haiti.index.map(int) # use map to change type to int	
+		df_can.columns = list(map(str, df_can.columns)) # use map let's convert the column names into strings: '1980' to '2013'.
+		# map(), 
 
 	v. bins = np.linspace(min(df["horsepower"]), max(df["horsepower"]), 4)
 		>>> 	array([ 48.        , 119.33333333, 190.66666667, 262.        ])
