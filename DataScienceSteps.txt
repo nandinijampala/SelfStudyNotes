@@ -659,3 +659,6 @@ Insert Column in Dataframe
 
 Filter Dataframe
 df.where(df > 3)
+
+To Display all the columns in Jupyter Notebook
+pd.options.display.max_columns = None
