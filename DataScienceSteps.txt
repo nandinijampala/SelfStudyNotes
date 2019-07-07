@@ -206,7 +206,9 @@ names2011 = pd.read_csv('names/yob2011.txt',names=['name','sex','number'])
 top_five_flights = flights[flights['name'].isin(top_five)]
 #Sort Series
 carrier_flights = carrier_flights.sort_values(ascending=False) #.sort_values(by=[5], ascending=[False]) # 5 is the column index
-
+#sort dataframe
+df.sort_index(axis=1, ascending=False)
+df.sort_values(by='B', ascending=False)
 
 # Know Relation between data
 pearsonr(data['horsepower'], data['price']) # Between -1 and 1 #r2_Score(in %) = pearsonr^2 
@@ -629,3 +631,31 @@ df['drive-wheels'].value_counts().to_frame()
 
 DESCRIVE OBJECT TYPE
 df.describe(include=['object'])
+
+Return the step size of linspace
+	my_linspace = np.linspace(5, 15, 9, retstep=True)
+	my_linspace[1]
+
+Setting Dataframe values by label - .at['row','column']
+	sample_df_2.at[dates_index[3],'Fruits'] = 'pear'
+
+Setting Dataframe values by position - .iat[row_index,column_index]
+	sample_df_2.iat[3,2] = 4444
+
+Reindexing the dataframe
+	new_index= ['Safari', 'Iceweasel', 'Comodo Dragon', 'IE10', 'Chrome']
+	browser_df_2 = browser_df.reindex(new_index)
+
+Pandas display precision float value upto 2 decimal
+	pd.set_option('display.precision', 2)
+	sample_df_2.describe()
+
+Specific sheet in an excel file
+	file_name_string = 'EmployeesWithGrades.xlsx'
+	employees_df = pd.read_excel(file_name_string, 'Sheet1', index_col=None, na_values=['NA'])
+
+Insert Column in Dataframe
+	df.insert(POSITION_OF_COLUMN, "COLUMN NAME", COLUMN_LIST)
+
+Filter Dataframe
+df.where(df > 3)
