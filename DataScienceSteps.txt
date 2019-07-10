@@ -383,6 +383,17 @@ accuracy_score(y_expect, y_pred)
 
 pipe.fit(X_train, y_train)
 pipe.score(X_test, y_test)
+
+# GridsearchCV Printing the results out
+def print_results(results):
+    print('BEST PARAMS: {}\n'.format(results.best_params_))
+    means = results.cv_results_['mean_test_score']
+    stds = results.cv_results_['std_test_score']
+    for mean, std, params in zip(means, stds, results.cv_results_['params']):
+        print('{} (+/-{}) for {}'.format(round(mean, 3), round(std * 2, 3), params))
+
+
+
 ---------------------------------
 8. VISUALIZATION
 ---------------------------------
@@ -541,6 +552,11 @@ plt.plot(x1,y1, marker = '+', mew=15)
 sb.pairplot(cars)
 pd.plotting.scatter_matrix(cars); 
 
+
+8.16 # Plotting categorical variables and Ordinal Variables plotting
+for i, col in enumerate(['Cabin_ind', 'Sex', 'Embarked','Pclass', 'SibSp', 'Parch']):
+    plt.figure(i)
+    sns.catplot(x=col, y='Survived', data=titanic, kind='point', aspect=2 )
 ---------------------------------
 9. STORY TELLING
 ---------------------------------
@@ -662,3 +678,6 @@ df.where(df > 3)
 
 To Display all the columns in Jupyter Notebook
 pd.options.display.max_columns = None
+
+Write out pickled model
+joblib.dump(cv.best_estimator_, '../../../LR_model.pkl')
