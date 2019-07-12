@@ -281,6 +281,12 @@ from scipy.stats import spearmanr
 spearmanr_coefficient, p_value = spearmanr(cyl, vs)
 print('Spearman Rank Correlation Coefficient %0.3f' % (spearmanr_coefficient))
 >>> Spearman Rank Correlation Coefficient -0.814  					STRONG Negative Correlation
+
+
+
+#FEATURE SELECTION
+# Create a numpy array based on the model's feature importances - GridSearchCV
+importance = model.feature_importances_
 ---------------------------------
 6. MACHINE LEARNING STEPS
 ---------------------------------
