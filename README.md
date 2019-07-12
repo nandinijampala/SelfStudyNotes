@@ -6,6 +6,7 @@ Mixture of all courses I am following
 <b>Machine Learning/Data Science</b><br>
 Python<br>
 Spyder<br>
+PyCharm<br>
 RStudio<br>
 GoogleColab<br>
 Jupyter<br>
