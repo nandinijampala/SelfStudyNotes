@@ -20,11 +20,29 @@ Influence = \Cook`s distance
 Regression Overview with \"ASSUMPTIONS" Explained
 "http://www.zstatistics.com/regression"
 "http://www.zstatistics.com/videos"
-1.	The true relationship between dependent y and predictor x is linear
+1.	The true relationship between dependent y and predictor x is linear - Linearity
 2.	The model errors are statistically independent
-3.	The errors are normally distributed with a 0 mean and constant standard deviation
+3.	The errors are normally distributed with a 0 mean and constant standard deviation - Normality of errors
 4.	The predictor x is non-stochastic and is measured error-free
 When deriving regression parameters, we make all the four assumptions mentioned above. If any of the assumptions is violated, the model would be misleading.
+L M E A N H 
+LINEARITY  
+Correct functional form
+Y = B₀ + B₁ X₁ + ε
+Can be improved by adding polynomial 
+Y = B₀ + B₁ X₁ + B₂ X₁² + 	ε
+
+residplot()
+Should have an even spread across X
+Likelihood Ratio-(LR) test
+
+
+HOMOSKEDASTICITY : CONSTANT ERROR VARIANCE
+AUTOCORRELATION : INDEPENDENCE OF ERRORS
+NORMALITY OF ERRORS : NORMALLY DISTRIBUTED ERRORS
+MULTICOLLINEARITY : TRUELY INDEPENDENT X TERMS (INDEPENDENT VARIABLES ARE TRUELY INDEPENDENT)
+EXOGENEITY : OMITTED VARIABLE BIAS
+MULTIVARIATE NORMALITY
 ----------------------------------------------------------------------------------------------------------------------------------------
 "https://www.analyticsvidhya.com/blog/2016/12/45-questions-to-test-a-data-scientist-on-regression-skill-test-regression-solution/"
 @ R-Squared vs Adjusted R-Squared

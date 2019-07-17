@@ -79,7 +79,9 @@ names2011 = pd.read_csv('names/yob2011.txt',names=['name','sex','number'])
 				DF.fillna(method='ffill') #will fill-forward any missing values with values from the last non-null element in the column
 	iii.counter_nan = dataframe_all.isnull()#Count number of null or nan in each column
 					counter_nan.sum()  #display Series of column nam and counter_nan # Count missing values
-
+	
+	iv. X = np.nan_to_num(X)
+						
 3.2 CATEGORICAL DATA
 	#Encode Text(France/Spain/Germany , Yes/No) into numbers(0/1/2 , 0/1)
 	#Yes/No to 0/1 - Encoding the dependent variable/target variable
@@ -563,6 +565,27 @@ pd.plotting.scatter_matrix(cars);
 for i, col in enumerate(['Cabin_ind', 'Sex', 'Embarked','Pclass', 'SibSp', 'Parch']):
     plt.figure(i)
     sns.catplot(x=col, y='Survived', data=titanic, kind='point', aspect=2 )
+
+8.17 #Visualizing Decision Tree
+from sklearn.externals.six import StringIO
+import pydotplus
+import matplotlib.image as mpimg
+from sklearn import tree
+%matplotlib inline 
+
+dot_data = StringIO()
+filename = "drugtree.png"
+featureNames = my_data.columns[0:5]
+targetNames = my_data["Drug"].unique().tolist()
+out=tree.export_graphviz(drugTree,feature_names=featureNames, out_file=dot_data, class_names= np.unique(y_trainset), filled=True,  special_characters=True,rotate=False)  
+graph = pydotplus.graph_from_dot_data(dot_data.getvalue())  
+graph.write_png(filename)
+img = mpimg.imread(filename)
+plt.figure(figsize=(100, 200))
+plt.imshow(img,interpolation='nearest')
+"https://raw.githubusercontent.com/Gurubux/CognitiveClass-ML/master/Course_MachineLearningWithPython/4-Classification/DT_export_graphviz_code.png"
+
+
 ---------------------------------
 9. STORY TELLING
 ---------------------------------
