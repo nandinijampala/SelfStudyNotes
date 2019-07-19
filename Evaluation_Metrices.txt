@@ -1,0 +1,199 @@
+EVALUATION METRICS
+	REGRESSION
+	CLASSIFICATION 
+	CLUSTERING
+
+
+
+
+-------------------------------------------------------------------------------------------------------------------
+REGRESSION EVALUATION METRICS
+-------------------------------------------------------------------------------------------------------------------
+	      							         ₙ
+	MAE (Mean Absolute Error) 		=  1/n   Σ | yᵢ - ŷ |
+		  								    ᶦ⁼¹
+         							         ₙ
+	MSE (Mean Square Error)			=  1/n   Σ (yᵢ - ŷ )²    =   1/n * RSS
+										    ᶦ⁼¹
+							
+	RMSE (Root Mean Square Error)	=  √MSE
+
+	  									ₙ
+	RSS (Residual sum of squares)	=	Σ (yᵢ - ŷᵢ)²
+									   ᶦ⁼¹
+
+	  									ₙ
+	TSS (Total sum of squares)		=	Σ (yᵢ - ȳ)²
+									   ᶦ⁼¹
+
+	   									ₙ
+										Σ | yᵢ - ŷᵢ |			
+									   ᶦ⁼¹		
+	RAE (Relative Absolute Error)	=  --------------	
+									    ₙ
+										Σ | yᵢ - ȳ |			
+									   ᶦ⁼¹	
+
+	       								ₙ
+										Σ (yᵢ - ŷᵢ)²			
+									   ᶦ⁼¹						RSS
+	RSE (Relative Square Error)		=  --------------    = 	  --------
+									    ₙ						TSS
+										Σ (yᵢ - ȳ)²
+									   ᶦ⁼¹	
+	
+	R² Score  = (Variation(mean) - Variation(Fitted Line)) / Variation(mean) 
+			  		( TSS - RSS ) 
+			  =    ---------------
+					   ( TSS )
+			  = 1 - RSS/TSS  
+			  = 1 - RSE
+	It represents how close the data values are to the fitted regression line.			
+	R-squared values, like 0.73, can be translated into percentages by simply multiplying them by 100. An R-squared value of 0.73 means that there is a 73% reduction in variation around a fitted line compared to the mean. If R-squared was 1, then there would be a 100% reduction and if R-squared = 0, there would be a 0% reduction.
+
+
+	                            ( n - 1 )
+    Adj R²    = 1 - (1 - R²) -----------------
+                              ( n - p - 1 )
+
+
+    F-value 
+                              
+    	TSS = ss_mean = sum((y - np.mean(y))**2)
+		RSS = ss_simple = sum((y - reg.predict(X))**2)
+		
+		
+					( TSS - RSS ) (P𝒻ᵢₜ - Pₘₑₐₙ)
+		F-value = -------------------------------
+					   ( RSS ) (n - P𝒻ᵢₜ)
+#https://www.youtube.com/watch?v=nk2CQITm_eo
+
+	P-value
+			= 1 - CDF(F-value , DoF1 		   , DoF2 )	
+			= 1 - CDF(F-value , Extra Features , (n - P𝒻ᵢₜ) )	
+			= 1 - CDF(F-value , (P𝒻ᵢₜ - Pₘₑₐₙ)  , (n - P𝒻ᵢₜ) )	
+
+
+P𝒻ᵢₜ 	-> Parameters in the regression Line
+Pₘₑₐₙ 	-> All the parameters become 0 except intercept thus Pₘₑₐₙ is usually 1
+n 		-> Number of data points
+	
+	
+	t-stat   =  Coeff / Std Error
+
+	Leverage = 1/n + (xᵢ - x̄ )/(TSS)
+
+	Influence = Cook`s distance
+
+
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score,explained_variance_score,max_error,mean_squared_log_error,median_absolute_error
+
+explained_variance_score(y, predictions)	#Explained variance regression score function
+mean_absolute_error(y, predictions)
+mean_squared_error(y, predictions)	
+r2_score(y, predictions)
+max_error(y, predictions)
+mean_squared_log_error(y, predictions)
+median_absolute_error(y, predictions)
+print("summary()\n",est2.summary())
+>>>
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                      y   R-squared:                       0.518
+Model:                            OLS   Adj. R-squared:                  0.507
+Method:                 Least Squares   F-statistic:                     46.27
+Date:                Fri, 19 Jul 2019   Prob (F-statistic):           3.83e-62
+Time:                        09:01:52   Log-Likelihood:                -2386.0
+No. Observations:                 442   AIC:                             4794.
+Df Residuals:                     431   BIC:                             4839.
+Df Model:                          10                                         
+Covariance Type:            nonrobust                                         
+==============================================================================
+                 coef    std err          t      P>|t|      [0.025      0.975]
+------------------------------------------------------------------------------
+const        152.1335      2.576     59.061      0.000     147.071     157.196
+x1           -10.0122     59.749     -0.168      0.867    -127.448     107.424
+x2          -239.8191     61.222     -3.917      0.000    -360.151    -119.488
+x3           519.8398     66.534      7.813      0.000     389.069     650.610
+x4           324.3904     65.422      4.958      0.000     195.805     452.976
+x5          -792.1842    416.684     -1.901      0.058   -1611.169      26.801
+x6           476.7458    339.035      1.406      0.160    -189.621    1143.113
+x7           101.0446    212.533      0.475      0.635    -316.685     518.774
+x8           177.0642    161.476      1.097      0.273    -140.313     494.442
+x9           751.2793    171.902      4.370      0.000     413.409    1089.150
+x10           67.6254     65.984      1.025      0.306     -62.065     197.316
+==============================================================================
+Omnibus:                        1.506   Durbin-Watson:                   2.029
+Prob(Omnibus):                  0.471   Jarque-Bera (JB):                1.404
+Skew:                           0.017   Prob(JB):                        0.496
+Kurtosis:                       2.726   Cond. No.                         227.
+==============================================================================
+-------------------------------------------------------------------------------------------------------------------
+CLASSIFICATION EVALUATION METRICS
+-------------------------------------------------------------------------------------------------------------------
+In "classification" problems, we use two types of algorithms (dependent on the kind of output it creates) 
+	Class output : Algorithms like SVM and KNN create a class output. For instance, in a binary classification problem, the outputs will be either 0 or 1. However, today we have algorithms which can convert these class outputs to probability. But these algorithms are not well accepted by the statistics community.
+	Probability output : Algorithms like Logistic Regression, Random Forest, Gradient Boosting, Adaboost etc. give probability outputs. Converting probability outputs to Class output is just a matter of creating a threshold probability.
+
+In "regression" problems, we do not have such inconsistencies in output. The output is always continuous in nature and requires no further treatment.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--------------------------------------------------------------------------------------------------------------------------
+
+
+GridSearchCV(scoring='')
+"https://scikit-learn.org/stable/modules/model_evaluation.html#scoring-parameter"
+"https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html#sklearn.model_selection.GridSearchCV"
+
+@Scoring							Function											Comment
+CLASSIFICATION	 	 
+‘accuracy’	                        metrics.accuracy_score	 
+‘balanced_accuracy’	                metrics.balanced_accuracy_score	 
+‘average_precision’	                metrics.average_precision_score	 
+‘brier_score_loss’	                metrics.brier_score_loss	 
+‘f1’	                        	metrics.f1_score									for binary targets
+‘f1_micro’	                        metrics.f1_score									micro-averaged
+‘f1_macro’	                        metrics.f1_score									macro-averaged
+‘f1_weighted’	                    metrics.f1_score									weighted average
+‘f1_samples’	                    metrics.f1_score									by multilabel sample
+‘neg_log_loss’	                    metrics.log_loss									requires predict_proba support
+‘precision’ etc.	                metrics.precision_score								suffixes apply as with ‘f1’
+‘recall’ etc.	                    metrics.recall_score								suffixes apply as with ‘f1’
+‘jaccard’ etc.	                    metrics.jaccard_score								suffixes apply as with ‘f1’
+‘roc_auc’	                        metrics.roc_auc_score								 
+
+CLUSTERING	 	 
+‘adjusted_mutual_info_score’	    metrics.adjusted_mutual_info_score	 
+‘adjusted_rand_score’	            metrics.adjusted_rand_score	 
+‘completeness_score’	            metrics.completeness_score	 
+‘fowlkes_mallows_score’	            metrics.fowlkes_mallows_score	 
+‘homogeneity_score’	                metrics.homogeneity_score	 
+‘mutual_info_score’	                metrics.mutual_info_score	 
+‘normalized_mutual_info_score’	    metrics.normalized_mutual_info_score	 
+‘v_measure_score’	                metrics.v_measure_score	 
+
+REGRESSION	 	 
+‘explained_variance’	            metrics.explained_variance_score	 
+‘max_error’	                        metrics.max_error	 
+‘neg_mean_absolute_error’	        metrics.mean_absolute_error	 
+‘neg_mean_squared_error’	        metrics.mean_squared_error	 
+‘neg_mean_squared_log_error’	    metrics.mean_squared_log_error	 
+‘neg_median_absolute_error’	        metrics.median_absolute_error	 
+‘r2’	                        	metrics.r2_score	 
+
+
+

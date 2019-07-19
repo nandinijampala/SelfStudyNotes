@@ -1,0 +1,259 @@
+Analysis Tests
+
+-------------------------------------------------------------------------------------------------------------------
+REGRESSION
+-------------------------------------------------------------------------------------------------------------------
+THE PEARSON CORRELATION
+SPEARMAN`S RANK ORDER CORRELATION
+CHI-SQUARE(X²) TEST
+
+
+-------------------------------------------------------------
+AREA UNDER THE CURVE
+-------------------------------------------------------------
+Definite Integrals and Area Under a Curve
+https://revisionmaths.com/advanced-level-maths-revision/pure-maths/calculus/area-under-curve
+
+-------------------------------------------------------------
+PROBABILITY DENSITY FUNCTION - CONTINOUS VARIABLE
+-------------------------------------------------------------
+https://www.khanacademy.org/math/statistics-probability/random-variables-stats-library/random-variables-continuous/v/probability-density-functions
+
+Y = {Amt of rain tomorrow}
+Logically we can`t measure the exact amount of rain, so we find the probablity of a range, by using Definte integral under the curve with limits with the mentioned range.
+p-value :
+				   ₂.₁
+P(|Y-2| < 0.1) =   ∫ f(x) dx
+				   ¹.⁹
+https://raw.githubusercontent.com/Gurubux/Data-Lit/master/2-StatisticsAndProbability/2.3-RandomVariables/Probability_density_function.jpg
+
+
+
+-------------------------------------
+PROBABILITY IN NORMAL DENSITY CURVES
+-------------------------------------
+https://www.khanacademy.org/math/statistics-probability/random-variables-stats-library/random-variables-continuous/e/probability-normal-density-curves
+
+Calculating shaded area
+We can use the "normalcdf" function on most graphing calculators to find the shaded area:
+ 
+​	  
+normalcdf:
+lower bound: 26
+upper bound: 30
+μ=26
+σ=2
+​	 
+Output:
+~ 0.4772
+
+
+
+The calculator function "normalpdf" stands for normal probability density function. It finds the height of a normal curve at any given point.
+
+The "normalcdf" function stands for normal cumulative density function, and it finds the area below a normal curve between two given points.
+Since probability for a continuous random variable relates to shaded area under its density curve, we always use "normalcdf" to find probability when we're dealing with a normally distributed variable.
+
+
+We could use the standard normal table and z-scores to find this probability, or we could use the 68-95-99.7% rule since the boundaries fall exactly at the mean and two standard deviation above the mean:
+https://www.khanacademy.org/math/statistics-probability/random-variables-stats-library/random-variables-continuous/e/probability-normal-density-curves
+STANDARD NORMAL DISTRIBUTION Table - https://www.mathsisfun.com/data/standard-normal-distribution-table.html
+					    ______________  
+					   /    x - μ	 /
+P(X<K)	=		P(    / z < ______  /  )
+					 /	      σ	   / 
+					/_____________/
+
+    					______________  
+					   /    73 - 70	 /
+P(X<73)	=		P(    / z < ______  /  )
+					 /	      6	   / 
+					/_____________/
+
+
+		=		P(   z < −0.5   )
+p-value		≈       0.6915    (from table)
+
+​
+
+----------------------------------------------------------------------------------------------------------------------
+@PARAMETRIC METHODS
+-Exploring correlation between variables
+	- parametric methods in pandas and scipy
+ THE PEARSON CORRELATION
+			sb.pairplot(cars)
+			pd.plotting.scatter_matrix(mouse); 
+
+			import scipy
+			from scipy.stats.stats import pearsonr
+			pearsonr_coefficient, p_value = pearsonr(mpg, hp)
+			print(`mpg, hp PearsonR Correlation Coefficient %0.3f` % (pearsonr_coefficient))
+			print(f`mpg, hp p_value {p_value:.7f}`)
+			#calculate the Pearson correlation coefficient
+			corr = X.corr()
+			#visualize the Pearson correlation coefficient
+			sb.heatmap(corr,xticklabels=corr.columns.values, yticklabels=corr.columns.values)
+
+		Pearson Correlation Assumptions
+		- Data is normally distributed
+		- You have continous, numeric values
+		- Your variables are linearly related
+----------------------------------------------------------------------------------------------------------------------
+@NON PARAMETRIC METHODS
+	- Used For Categorical, Non Linearly related, Non Normally distributed variables
+	1. SPEARMAN`S RANK  CORRELATION
+	2. CHI-SQUARE(X²) TEST
+-----------------------------------------------------------
+1. SPEARMAN`S RANK ORDER CORRELATION-
+-----------------------------------------------------------
+		__________________
+	   /      6Σᵢdᵢ²	 /
+ρ =   / 1 - ----------- /
+	 /	     n(n²–1)   / 
+	/_________________/		   
+	Where,
+		n is the number of data points of the two variables 
+		dᵢ is the difference in the ranks of the iᵗʰ element of each random variable considered. dₓ - dᵧ
+		______________________________________________________________________
+	   /      6[Σᵢdᵢ² + (1/12)[(m₁³−m₁) + (m₂³−m₂) + (m₃³−m₃) +...(mₖ³−mₖ)]	 /
+ρ =   / 1 - --------------------------------------------------------------- /
+	 /	     						  n(n²–1)   						   / 
+	/_____________________________________________________________________/		
+	where,
+		k is the number of values that are repeated
+		mₖ is the number of times the kᵗʰ term is repeated
+
+ρ = +1 to -1
+A ρ of +1 indicates a perfect association of ranks
+A ρ of zero indicates no association between ranks and
+ρ of -1 indicates a perfect negative association of ranks.
+The closer ρ is to zero, the weaker the association between the ranks.
+"https://www.toppr.com/guides/business-mathematics-and-statistics/correlation-and-regression/rank-correlation/"
+
+Spearman`s rank correlation
+#Checking for independence between features
+#spearmanr because drat carb are ordinal datas, i.e. numerical but can be converted to categorical
+spearmanr_coefficient, p_value =  spearmanr(X1, X2)
+
+1. Spearman`s rank  correlation - Ordinale Data types- Numerical variables that can be categorized -->  1 0 -1
+	Spearman`s rank Correlation Assumptions
+		a. Ordinal Variables ( Numeric but may be ranked like a categorical variable)
+		b. Related Non Linearly
+		c. non-normally distributed
+			
+	from scipy.stats import spearmanr
+	spearmanr_coefficient, p_value = spearmanr(cyl, vs)
+	print(`Spearman Rank Correlation Coefficient %0.3f` % (spearmanr_coefficient))
+	>>> Spearman Rank Correlation Coefficient -0.814  					"STRONG Negative Correlation"
+
+	spearmanr_coefficient, p_value = spearmanr(cyl, am)
+	print(`Spearman Rank Correlation Coefficient %0.3f` % (spearmanr_coefficient))
+	Spearman Rank Correlation Coefficient -0.522    					"Negative Correlation"
+
+	spearmanr_coefficient, p_value = spearmanr(cyl, gear)
+	print(`Spearman Rank Correlation Coefficient %0.3f` % (spearmanr_coefficient))
+	Spearman Rank Correlation Coefficient -0.564   						"Negative Correlation"
+
+
+-----------------------------------------------------------
+CHI-SQUARE(X²) TEST
+-----------------------------------------------------------
+		______________
+	   /   (O - E)²	 /
+X² =  / Σ   ______  /
+	 /	      E	   / 
+	/_____________/		   
+
+https://www.mathsisfun.com/data/chi-square-test.html
+
+CHI-SQUARE to P-VALUE
+https://www.mathsisfun.com/data/chi-square-calculator.html
+
+CALCULATE DEGREES OF FREEDOM
+Multiply (rows − 1) by (columns − 1)
+
+Example: DF = (2 − 1)(2 − 1) = 1×1 = 1
+
+2. Chi-Square tables - Test for independence between variables -  Null hypothesis= Variables are independent.
+	p < 0.5 - Reject Null hypothesis and conclude that the variables are correlated
+	p > 0.5 - Accept Null hypothesis and conclude that the variables are "INDEPENDENT"
+	Chi-Square Correlation Assumptions
+		a. Make sure if variables are categorical or Numeric
+		b. If numerical, make sure you have binned them( variable has numeric values 0 - 100, bin them in bins of 10 like 0-10, 11-20, ...91-100 )
+from scipy.stats import chi2_contingency
+	
+	table = pd.crosstab(cars[`cyl`], cars[`am`])
+	chi2, p, dof, expected = chi2_contingency(table.values)
+	print(`Chi-square Statistic %0.3f p_value %0.3f` % (chi2, p))
+	>>>Chi-square Statistic 8.741 p_value 0.013
+
+	table = pd.crosstab(cars[`cyl`], cars[`vs`])
+	chi2, p, dof, expected = chi2_contingency(table.values)
+	print(`Chi-square Statistic %0.3f p_value %0.3f` % (chi2, p))
+	>>>Chi-square Statistic 21.340 p_value 0.000
+
+	table = pd.crosstab(cars[`cyl`], cars[`gear`])
+	chi2, p, dof, expected = chi2_contingency(table.values)
+	print(`Chi-square Statistic %0.3f p_value %0.3f` % (chi2, p))
+	>>>Chi-square Statistic 18.036 p_value 0.001
+
+"p < 0.05 so Reject the Null Hypothesis and conclude that variables are correlated and not independent"
+
+
+-----------------------------------------------------------
+Variance Inflation Factor VIF
+-----------------------------------------------------------
+
+from statsmodels.stats.outliers_influence import variance_inflation_factor
+# For each X, calculate VIF and save in dataframe
+# d1 = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'y']
+vif = pd.DataFrame()
+vif["VIF Factor"] = [variance_inflation_factor(d1.values, i) for i in range(d1.shape[1])]
+vif["features"] = d1.columns
+	VIF Factor	features
+0	9.093393	0
+1	1.217386	1
+2	1.323574	2
+3	1.723241	3
+4	1.542681	4
+5  \59.700276	5
+6  \39.374197	6
+7  \15.410430	7
+8	8.915790	8
+9	10.522763	9
+10	1.488241	10
+11	2.073611	y
+
+----------------------------------------------------------------------------------------------------------------------
+COOK`S DISTANCE
+----------------------------------------------------------------------------------------------------------------------
+influence = est2.get_influence()
+#c is the distance and p is p-value
+(c, p) = influence.cooks_distance
+ax1.stem(np.arange(len(c)), c, markerfmt=",")
+
+----------------------------------------------------------------------------------------------------------------------
+LEVERAGE
+----------------------------------------------------------------------------------------------------------------------
+from statsmodels.graphics.regressionplots import plot_leverage_resid2
+plot_leverage_resid2(est2)
+
+----------------------------------------------------------------------------------------------------------------------
+INFLUENCE
+----------------------------------------------------------------------------------------------------------------------
+from statsmodels.stats.outliers_influence import OLSInfluence
+test_class = OLSInfluence(results)
+test_class.dfbetas[:5,:]
+from statsmodels.graphics.regressionplots import influence_plot
+influence_plot(est2 , criterion="cooks")
+
+ax1 = sm.graphics.influence_plot(est2, ax=ax1, criterion="cooks")
+
+----------------------------------------------------------------------------------------------------------------------
+Heteroskedasticity tests
+----------------------------------------------------------------------------------------------------------------------
+BREUSH-PAGAN TEST:
+name = ['Lagrange multiplier statistic', 'p-value',
+        'f-value', 'f p-value']
+test = sms.het_breuschpagan(results.resid, results.model.exog)
+lzip(name, test)

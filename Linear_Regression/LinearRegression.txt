@@ -53,11 +53,12 @@ print(regression_model.coef_)
 
 " MPG =  37.2851 - 5.3445 * WT."           
 
-
+\"R-SQUARED"
 regression_model.score(X = pd.DataFrame(mtcars["wt"]), y = mtcars["mpg"]) #"R-squared" a value that ranges from 0 to 1 which describes the 																				proportion of variance in the response variable that is 																					explained by the model. In this case, car weight explains 																					roughly 75% of the variance in mpg.
 >>>0.75283279365826461
 
-The R-squared measure is based on the residuals: differences between what the model predicts for each data point and the actual value of each data point. We can extract the model's residuals by making a prediction with the model on the data and then subtracting the actual value from each prediction:
+"The R-squared measure is based on the residuals: differences between what the model predicts for each data point and the actual value of each data point. We can extract the model's residuals by making a prediction with the model on the data and then subtracting the actual value from each prediction"
+
 train_prediction = regression_model.predict(X = pd.DataFrame(mtcars["wt"]))
 
 # Actual - prediction = residuals
@@ -85,19 +86,14 @@ SSTotal = ((mtcars["mpg"] - mtcars["mpg"].mean())**2).sum()
 
 
 #plot the line it fits on our scatterplot to get a sense of how well it fits the data:
-mtcars.plot(kind="scatter",
-           x="wt",
-           y="mpg",
-           figsize=(9,9),
-           color="black",
-           xlim = (0,7))
+mtcars.plot(kind="scatter", x="wt", y="mpg", figsize=(9,9), color="black", xlim = (0,7))
 
 # Plot regression line
 plt.plot(mtcars["wt"],      # Explanitory variable
          train_prediction,  # Predicted values
          color="blue")
 
-"OUTLIER EFFECT"
+\"OUTLIER EFFECT"
 mtcars_subset = mtcars[["mpg","wt"]]
 super_car = pd.DataFrame({"mpg":50,"wt":10}, index=["super"])
 new_cars = mtcars_subset.append(super_car)
@@ -118,7 +114,7 @@ plt.plot(new_cars["wt"],     # Explanatory variable
          train_prediction2,  # Predicted values
          color="blue")
 
-"Normality of residuals :  Q-Q (quantile-quantile) plot." : stats.probplot()
+\"Normality of residuals :  Q-Q (quantile-quantile) plot." : stats.probplot()
 plt.figure(figsize=(9,9))
 
 stats.probplot(residuals, dist="norm", plot=plt)
@@ -126,7 +122,7 @@ stats.probplot(residuals, dist="norm", plot=plt)
 When residuals are normally distributed, they tend to lie along the straight line on the Q-Q plot. In this case residuals appear to follow a slightly non-linear pattern: the residuals are bowed a bit away from the normality line on each end. This is an indication that simple straight line might not be sufficient to fully describe the relationship between weight and mpg.
 
 
-"Evaluation RMSE"
+\"Evaluation RMSE"
 def rmse(predicted, targets):
     """
     Computes root mean squared error of two numpy ndarrays
@@ -149,131 +145,8 @@ RMSE = mean_squared_error(train_prediction, mtcars["mpg"])**0.5
 
 RMSE
 >>>2.9491626859550282
-------------------------------------------------------
-Polynomial Regression
-------------------------------------------------------
-Variables often exhibit non-linear relationships that can`t be fit well with a straight line. In these cases, we can use linear regression to fit a curved line the data by adding extra higher order terms (squared, cubic, etc.) to the model. A linear regression that involves higher order terms is known as "polynomial regression."
-
-# Initialize model
-poly_model = linear_model.LinearRegression()
-
-# Make a DataFrame of predictor variables
-predictors = pd.DataFrame([mtcars["wt"],           # Include weight
-                           mtcars["wt"]**2]).T     # Include weight squared
-
-# Train the model using the new_cars data
-poly_model.fit(X = predictors, 
-               y = mtcars["mpg"])
-
-# Check trained model y-intercept
-print("Model intercept")
-print(poly_model.intercept_)
-
-# Check trained model coefficients (scaling factor given to "wt")
-print("Model Coefficients")
-print(poly_model.coef_)
-
-# Check R-squared
-poly_model.score(X = predictors, 
-                 y = mtcars["mpg"])
->>>
-Model intercept
-49.93081094945181
-Model Coefficients
-[-13.38033708   1.17108689]
-0.8190613581384095 # LR Rsquare >>>0.75283279365826461 Increased so better
 
 
-# Plot the curve from 1.5 to 5.5
-poly_line_range = np.arange(1.5, 5.5, 0.1)
-
-# Get first and second order predictors from range
-poly_predictors = pd.DataFrame([poly_line_range,
-                               poly_line_range**2]).T
-
-# Get corresponding y values from the model
-y_values = poly_model.predict(X = poly_predictors)
-
-mtcars.plot(kind="scatter",
-           x="wt",
-           y="mpg",
-           figsize=(9,9),
-           color="black",
-           xlim = (0,7))
-
-# Plot curve line
-plt.plot(poly_line_range,   # X-axis range
-         y_values,          # Predicted values
-         color="blue")
-
-preds = poly_model.predict(X=predictors)
-rmse(preds , mtcars["mpg"])
->>>2.5233004724610786  # LR RMSE 2.9491626859550282 - Reduced so Better
-
-
-
-"OVERFITTING"
-# Initialize model
-poly_model = linear_model.LinearRegression()
-
-# Make a DataFrame of predictor variables
-predictors = pd.DataFrame([mtcars["wt"],           
-                           mtcars["wt"]**2,
-                           mtcars["wt"]**3,
-                           mtcars["wt"]**4,
-                           mtcars["wt"]**5,
-                           mtcars["wt"]**6,
-                           mtcars["wt"]**7,
-                           mtcars["wt"]**8,
-                           mtcars["wt"]**9,
-                           mtcars["wt"]**10]).T     
-
-# Train the model using the new_cars data
-poly_model.fit(X = predictors, 
-               y = mtcars["mpg"])
-
-# Check trained model y-intercept
-print("Model intercept")
-print(poly_model.intercept_)
-
-# Check trained model coefficients (scaling factor given to "wt")
-print("Model Coefficients")
-print(poly_model.coef_)
-
-# Check R-squared
-poly_model.score(X = predictors, 
-                 y = mtcars["mpg"])
-
->>>Model intercept
--14921.120647946558
-Model Coefficients
-[ 6.45813583e+04 -1.20086135e+05  1.26931932e+05 -8.46598480e+04
-  3.73155209e+04 -1.10334758e+04  2.16590409e+03 -2.70730550e+02
-  1.94974165e+01 -6.15515447e-01]
-0.8702106585933677
-
-
-p_range = np.arange(1.5, 5.45, 0.01)
-
-poly_predictors = pd.DataFrame([p_range, p_range**2, p_range**3,
-                              p_range**4, p_range**5, p_range**6, p_range**7, 
-                              p_range**8, p_range**9, p_range**10]).T  
-
-# Get corresponding y values from the model
-y_values = poly_model.predict(X = poly_predictors)
-
-mtcars.plot(kind="scatter",
-           x="wt",
-           y="mpg",
-           figsize=(9,9),
-           color="black",
-           xlim = (0,7))
-
-# Plot curve line
-plt.plot(p_range,   # X-axis range
-         y_values,          # Predicted values
-         color="blue")
- Notice how the 10th order polynomial model curves wildly in some places to fit the training data. While this model happens to yield a closer fit to the training data, it will almost certainly fail to generalize well to new data as it leads to absurd predictions such as a car having less than 0 mpg if it weighs 5000lbs.
 ------------------------------------------------------
 Multiple Linear Regression
 ------------------------------------------------------
@@ -363,6 +236,8 @@ Diagnostic Plots
 Outliers, Leverage, Influence  -  https://www.youtube.com/watch?v=xc_X9GFVuVU
 Leverage = 1/n + (xᵢ - x̄ )/(TSS)
 Influence = \Cook`s distance
+"https://songhuiming.github.io/pages/2016/11/27/linear-regression-in-python-outliers-leverage-detect/"
+
 
 from statsmodels.stats.outliers_influence import summary_table
 
@@ -374,7 +249,7 @@ est = sm.OLS(y, X2)
 est2 = est.fit()
 st, data, ss2 = summary_table(est2, alpha=0.05)
 
-******************************************************************************************************************************************************
+**************************************************************ASSUMPTIONS****************************************************************************************
 ----------------------------------------------------------------------------------------------------------------------------------------
 Regression Overview with \"ASSUMPTIONS" Explained
 "http://www.zstatistics.com/regression"
@@ -395,6 +270,8 @@ X 			0.7393	0.2308 		3.20339 0.00136
 
 "http://r-statistics.co/Assumptions-of-Linear-Regression.html"
 "https://www.statisticssolutions.com/assumptions-of-linear-regression/"
+"http://people.duke.edu/~rnau/testing.htm"
+"http://www.statsmodels.org/devel/examples/notebooks/generated/regression_diagnostics.html"
 @L M E A N H 
 
 1. LINEARITY  
@@ -507,8 +384,34 @@ X 			0.7393	0.2308 		3.20339 0.00136
 	- Remedies
     	1. Remove one of variable	
 7. MULTIVARIATE NORMALITY
-******************************************************************************************************************************************************
 ----------------------------------------------------------------------------------------------------------------------------------------
+***********************************************************************LR ANALYSIS STEPS*******************************************************************************
+
+THE PEARSON CORRELATION
+SPEARMAN`S RANK ORDER CORRELATION
+CHI-SQUARE(X²) TEST
+VARIANCE INFLATION FACTOR-(VIF)
+OUTLIERS, LEVERAGE, INFLUENCE
+COOK`S DISTANCE
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------
+************************************************************ANALYTICS VIDHYA Q/A******************************************************************************************
+
 "https://www.analyticsvidhya.com/blog/2016/12/45-questions-to-test-a-data-scientist-on-regression-skill-test-regression-solution/"
 @ R-Squared vs Adjusted R-Squared
 “R squared” individually can’t tell whether a variable is significant or not because each time when we add a feature, “R squared” can either increase or stay constant. But, it is not true in case of “Adjusted R squared” (increases when features found to be significant).
@@ -749,4 +652,8 @@ L is a matrix with 0 at the top left and 1's down the diagonal, with 0's everywh
 Recall that if m < n, then Xᵀ X is non-invertible. However, when we add the term λ⋅L, then Xᵀ X + λ⋅L becomes invertible.
 
 
+****************************************************REFERENCE****************************************************************************
+https://machinelearningmastery.com/linear-regression-for-machine-learning/
+https://towardsdatascience.com/andrew-ngs-machine-learning-course-in-python-linear-regression-dd04fba8e137
 ****************************************************CODE****************************************************************************
+https://github.com/Gurubux/SelfStudyNotes/blob/master/Linear_Regression/Linear_regression.ipynb

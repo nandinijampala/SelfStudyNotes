@@ -1,0 +1,58 @@
+VISUALIZATION
+----------------------------------------------------------------------------------------------------------------------
+REGRESSION
+import scipy.stats as stats
+stats.probplot(residuals, dist="norm", plot=plt)
+
+
+
+#"https://seaborn.pydata.org/tutorial/regression.html"
+import seaborn as sns
+sns.regplot(x="X", y="y", data=DF);
+sns.lmplot(x="X", y="y", data=DF);
+sns.residplot(x="x", y="y", data=DF);
+sns.jointplot()
+sns.pairplot(DF)
+pd.plotting.scatter_matrix(DF); 
+
+
+
+#"https://seaborn.pydata.org/generated/seaborn.distplot.html"
+sns.distplot(x)
+
+#"https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.probplot.html"
+#QQplot
+sns.probplot(x) 
+
+def plot_Correlation_Coefficient_2(corr):
+    sns.heatmap(corr, vmax=.8, square=True);
+    plt.show()
+## Type 1 # https://github.com/Gurubux/Data-Lit/blob/master/2-StatisticsAndProbability/2.1-CreditScoring/Loan_Default_Prediction.ipynb
+def plot_Correlation_Coefficient_1(corr):
+    sns.set_context(context='notebook')
+    fig, ax = plt.subplots(figsize=(10,10)) 
+
+    # Generate a mask for the upper triangle
+    mask = np.zeros_like(corr, dtype=np.bool)
+    mask[np.tril_indices_from(mask)] = True
+
+    # Generate a custom diverging colormap
+    cmap = sns.diverging_palette(220, 10, as_cmap=True)
+
+    sns.heatmap(corr, cmap=cmap,linewidths=1, vmin=-1, vmax=1, square=True, cbar=True, center=0, ax=ax, mask=mask)
+    plt.show()
+
+
+#Leverage plot
+from statsmodels.graphics.regressionplots import plot_leverage_resid2
+plot_leverage_resid2(est2)
+
+# Cook'Distance Plot
+influence = est2.get_influence()
+#c is the distance and p is p-value
+(c, p) = influence.cooks_distance
+ax1.stem(np.arange(len(c)), c, markerfmt=",")
+
+# Influence Plot
+from statsmodels.graphics.regressionplots import influence_plot
+influence_plot(est2 , criterion="cooks")

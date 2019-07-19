@@ -324,15 +324,22 @@ pipe = Pipeline([
 
 
 ---------------------------------
-7. EVALUATION STEPS
+7. EVALUATION STEPS - "https://scikit-learn.org/stable/modules/classes.html#module-sklearn.metrics"
 ---------------------------------
- 
-from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
-mae = mean_absolute_error(y, pred)
-mse = mean_squared_error(y, pred)
-r2  = r2_score(test_y_ , test_y) # Between 0 and 1 #r2_Score(in %) = pearsonr^2 
+#REGRESSION
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score,explained_variance_score,max_error,mean_squared_log_error,median_absolute_error
+mean_absolute_error(y, pred)
+mean_squared_error(y, pred)
+r2_score(test_y_ , test_y) # Between 0 and 1 #r2_Score(in %) = pearsonr^2 
+explained_variance_score(y_true, y_pred)	#Explained variance regression score function
+max_error(y_true, y_pred)					#max_error metric calculates the maximum residual error.
+mean_squared_log_error(y_true, y_pred)		#Mean squared logarithmic error regression loss
+median_absolute_error(y_true, y_pred)		#Median absolute error regression loss
 
+model.fit(X_train, y_train)
+model.score(X_test, y_test)
 
+#CLASSIFICATION
 from sklearn.model_selection import learning_curve # learning curve
 train_sizes, train_scores, test_scores = learning_curve(estimator, X, y, cv=cv, n_jobs=n_jobs, train_sizes=train_sizes)
 plot_learning_curve()
@@ -389,8 +396,7 @@ from sklearn.metrics import accuracy_score
 accuracy_score(y_expect, y_pred)
 
 
-pipe.fit(X_train, y_train)
-pipe.score(X_test, y_test)
+
 
 # GridsearchCV Printing the results out
 def print_results(results):
@@ -399,6 +405,7 @@ def print_results(results):
     stds = results.cv_results_['std_test_score']
     for mean, std, params in zip(means, stds, results.cv_results_['params']):
         print('{} (+/-{}) for {}'.format(round(mean, 3), round(std * 2, 3), params))
+
 
 
 
@@ -432,8 +439,11 @@ py.iplot(data, filename='basic histogram')
 # https://github.com/Gurubux/Data-Lit/blob/master/2-StatisticsAndProbability/2.5-Homework_Airlines/airlines_least_delay_new.ipynb
 
 8.2 plt.scatter(X_train, y_train, color = 'red') #Plots the points as per given X,Y
-
+	
 8.3 plt.plot(X_train, regressor.predict(X_train), color = 'blue') #Draws a line through the X,Y points
+	8.2 + 8.3
+	sns.regplot(x="X", y="y", data=DF);
+	sns.lmplot(x="X", y="y", data=DF);
 
 8.4 #Plotting Learning Curve
 plot_learning_curve()
@@ -523,7 +533,7 @@ ax.set_xticklabels(cars.car_names, rotation=60, fontsize='medium')
 ax.grid()
 
 fig = plt.figure()
-    fig, (ax1, ax2) = plt.subplots(1,2)
+fig, (ax1, ax2) = plt.subplots(1,2)
 
 ax1.plot(x)
 ax2.plot(x,y)
@@ -585,7 +595,12 @@ plt.figure(figsize=(100, 200))
 plt.imshow(img,interpolation='nearest')
 "https://raw.githubusercontent.com/Gurubux/CognitiveClass-ML/master/Course_MachineLearningWithPython/4-Classification/DT_export_graphviz_code.png"
 
+8.18 #Normality of residuals :  Q-Q (quantile-quantile) plot." : 
+plt.figure(figsize=(9,9))
+stats.probplot(residuals, dist="norm", plot=plt)
 
+8.19 #checking whether the simple regression model is appropriate for a dataset
+sns.residplot(x="x", y="y", data=DF)
 ---------------------------------
 9. STORY TELLING
 ---------------------------------
