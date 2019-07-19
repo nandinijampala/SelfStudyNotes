@@ -150,6 +150,16 @@ RMSE
 ------------------------------------------------------
 Multiple Linear Regression
 ------------------------------------------------------
+@ Multiple Linear Regression - "https://stattrek.com/multiple-regression/regression-coefficients.aspx"
+
+	ŷ = b0 + b1x1 + b2x2 + … + bk-1xk-1 + bkxk
+	Y = Xb
+	X`Y = X`Xb 
+		Here, matrix X` is the transpose of matrix X. To solve for regression coefficients, simply pre-multiply by the inverse of X`X:
+	(X`X)-1X`Xb = (X`X)-1X`Y
+	b 			= (X`X)-1X`Y
+
+
 When faced with a predictive modeling task, you`ll often have several variables in your data that may help explain variation in the response variable. You can include more explanatory variables in a linear regression model by including more columns in the data frame you pass to the model training function. Let`s make a new model that adds the horsepower variable to our original model:
 # Initialize model
 multi_reg_model = linear_model.LinearRegression()
@@ -393,12 +403,22 @@ CHI-SQUARE(X²) TEST
 VARIANCE INFLATION FACTOR-(VIF)
 OUTLIERS, LEVERAGE, INFLUENCE
 COOK`S DISTANCE
+BREUSH-PAGAN TEST:
+HET_GOLDFELDQUANDT
 
+T-Test
+	ONE-SAMPLE T-TEST : stats.ttest_1samp() : T-test for the MEAN OF ONE GROUP of scores.
+	TWO-SAMPLE T-TEST stats.ttest_ind(a= minnesota_ages,b= wisconsin_ages, equal_var=False) : T-test for the MEANS OF TWO INDEPENDENT SAMPLES
+	PAIRED T-TEST : stats.ttest_rel(a = before, b = after) : T-test on TWO RELATED samples
+	TYPE I AND TYPE II ERROR
+	Type I ERROR 	: "false positive" or "false hit".
+	Type II ERROR 	: "false negative" or "miss".
 
-
-
-
-
+ANOVA
+	ONE-WAY ANOVA : stats.f_oneway(asian, black, hispanic, other, white)  
+			  	  : stats.multicomp.pairwise_tukeyhsd(endog=voter_age,     # Data
+                          		   				  groups=voter_race,   # Groups
+                          		   				  alpha=0.05)          # Significance level
 
 
 
@@ -655,5 +675,11 @@ Recall that if m < n, then Xᵀ X is non-invertible. However, when we add the te
 ****************************************************REFERENCE****************************************************************************
 https://machinelearningmastery.com/linear-regression-for-machine-learning/
 https://towardsdatascience.com/andrew-ngs-machine-learning-course-in-python-linear-regression-dd04fba8e137
+http://www.stat.yale.edu/Courses/1997-98/101/linreg.htm
+https://github.com/Gurubux/CognitiveClass-ML/blob/master/Course/3-Regression/3.2SimpleLinearRegression/CC-3-2-SimpleLinearRegression.odt
 ****************************************************CODE****************************************************************************
 https://github.com/Gurubux/SelfStudyNotes/blob/master/Linear_Regression/Linear_regression.ipynb
+https://github.com/Gurubux/SelfStudyNotes/blob/master/Linear_Regression/AutoCorrelation.ipynb
+https://github.com/Gurubux/CognitiveClass-ML/blob/master/Course/3-Regression/3.2SimpleLinearRegression/ML0101EN_Reg_Simple_Linear_Regression_Co2_py_v1.ipynb
+
+

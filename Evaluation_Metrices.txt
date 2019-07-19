@@ -129,6 +129,19 @@ Skew:                           0.017   Prob(JB):                        0.496
 Kurtosis:                       2.726   Cond. No.                         227.
 ==============================================================================
 -------------------------------------------------------------------------------------------------------------------
+Two types of evaluation approaches that can be used to achieve this goal.These approaches are: 
+	1. train and test on the same dataset, and 
+	2. train/test split.
+	3. K Fold 					
+		cross_val_score()
+		cross_val_score().mean()
+	4. ShuffleSplit()
+	cross_val_score(rf_class, data_input, data_output, scoring='accuracy', cv = 10)
+	cv = ShuffleSplit(n_splits=100, test_size=0.2, random_state=0)
+	cross_val_score(rf_class, data_input, data_output, scoring='accuracy', cv = 10)
+
+********************************************************************************************************************************************	
+-------------------------------------------------------------------------------------------------------------------
 CLASSIFICATION EVALUATION METRICS
 -------------------------------------------------------------------------------------------------------------------
 In "classification" problems, we use two types of algorithms (dependent on the kind of output it creates) 

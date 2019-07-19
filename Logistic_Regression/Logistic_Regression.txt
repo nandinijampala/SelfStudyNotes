@@ -1,3 +1,6 @@
+Supervised Machine Learning: Classification
+https://towardsdatascience.com/supervised-machine-learning-classification-5e685fe18a6d
+
 INTRO TO LOGISTIC REGRESSION
 1. What is  logistic regression?
 2. What kind of problems solved?
