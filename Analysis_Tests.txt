@@ -1,7 +1,13 @@
 Analysis Tests
+-------------------------------------------------------------------------------------------------------------------
+LEARNING CURVE ANALYSIS FOR REGRESSION AND CLASSIFICATION
+-------------------------------------------------------------------------------------------------------------------
+"https://github.com/Gurubux/StatQuest/tree/master/LearningCurve"
+
+
 
 -------------------------------------------------------------------------------------------------------------------
-REGRESSION
+REGRESSION - https://github.com/Gurubux/SelfStudyNotes/tree/master/Linear_Regression
 -------------------------------------------------------------------------------------------------------------------
 THE PEARSON CORRELATION
 SPEARMAN`S RANK ORDER CORRELATION

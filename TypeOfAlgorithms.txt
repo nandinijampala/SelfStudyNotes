@@ -1,0 +1,51 @@
+NAME 							:
+TYPE 							: 
+SUB TYPE						:
+DEFINITION 						: 
+TYPE OF VARIABLES/FEATURES		:
+TYPE OF TARGET VARIABLE 		:
+FORMULAE						:
+GENERAL WORKING/STEPS			:
+IMPORT 							:
+SCALING 						:
+FIT 							:
+HYPER-PARAMETERS				:
+REGULARIZATION PARAMETER 		:
+PREDICT							:
+EVALUATION METRICS				:
+VISUALIZATION					:
+ADVANTAGES/DISADVANTAGES		:
+APPLICATIONS					:
+EXAMPLE CODE 					:
+
+Linear Regression 
+Polynomial Regression 
+Support Vector Regression 
+Decision Tree Regression 
+Randomforest Regression 
+
+Ridge Regression 
+Lasso Regression 
+ElasticNet Regression 
+
+KNN
+Logistic Regression
+Support Vector Classification
+Naive Bayes
+Decision Tree
+Random Forest
+
+K-means
+Heirarchical Clustering
+DBSCAN
+
+Content-based
+Collaborative Filtering
+
+Principal Component Analysis (PCA)
+Linear Discriminant Analysis (LDA)
+
+XGBoost
+
+Apriori
+FP-Growth

@@ -1,0 +1,258 @@
+------------------------------------------------------
+POLYNOMIAL REGRESSION
+------------------------------------------------------
+Variables often exhibit non-linear relationships that can`t be fit well with a straight line. In these cases, we can use linear regression to fit a curved line the data by adding extra higher order terms (squared, cubic, etc.) to the model. A linear regression that involves higher order terms is known as "polynomial regression."
+
+# Initialize model
+poly_model = linear_model.LinearRegression()
+
+# Make a DataFrame of predictor variables
+predictors = pd.DataFrame([mtcars["wt"],           # Include weight
+                           mtcars["wt"]**2]).T     # Include weight squared
+
+# Train the model using the new_cars data
+poly_model.fit(X = predictors, 
+               y = mtcars["mpg"])
+
+# Check trained model y-intercept
+print("Model intercept")
+print(poly_model.intercept_)
+
+# Check trained model coefficients (scaling factor given to "wt")
+print("Model Coefficients")
+print(poly_model.coef_)
+
+# Check R-squared
+poly_model.score(X = predictors, 
+                 y = mtcars["mpg"])
+>>>
+Model intercept
+49.93081094945181
+Model Coefficients
+[-13.38033708   1.17108689]
+0.8190613581384095 # LR Rsquare >>>0.75283279365826461 Increased so better
+
+
+# Plot the curve from 1.5 to 5.5
+poly_line_range = np.arange(1.5, 5.5, 0.1)
+
+# Get first and second order predictors from range
+poly_predictors = pd.DataFrame([poly_line_range,
+                               poly_line_range**2]).T
+
+# Get corresponding y values from the model
+y_values = poly_model.predict(X = poly_predictors)
+
+mtcars.plot(kind="scatter",
+           x="wt",
+           y="mpg",
+           figsize=(9,9),
+           color="black",
+           xlim = (0,7))
+
+# Plot curve line
+plt.plot(poly_line_range,   # X-axis range
+         y_values,          # Predicted values
+         color="blue")
+
+preds = poly_model.predict(X=predictors)
+rmse(preds , mtcars["mpg"])
+>>>2.5233004724610786  # LR RMSE 2.9491626859550282 - Reduced so Better
+
+
+
+"OVERFITTING"
+# Initialize model
+poly_model = linear_model.LinearRegression()
+
+# Make a DataFrame of predictor variables
+predictors = pd.DataFrame([mtcars["wt"],           
+                           mtcars["wt"]**2,
+                           mtcars["wt"]**3,
+                           mtcars["wt"]**4,
+                           mtcars["wt"]**5,
+                           mtcars["wt"]**6,
+                           mtcars["wt"]**7,
+                           mtcars["wt"]**8,
+                           mtcars["wt"]**9,
+                           mtcars["wt"]**10]).T     
+
+# Train the model using the new_cars data
+poly_model.fit(X = predictors, 
+               y = mtcars["mpg"])
+
+# Check trained model y-intercept
+print("Model intercept")
+print(poly_model.intercept_)
+
+# Check trained model coefficients (scaling factor given to "wt")
+print("Model Coefficients")
+print(poly_model.coef_)
+
+# Check R-squared
+poly_model.score(X = predictors, 
+                 y = mtcars["mpg"])
+
+>>>Model intercept
+-14921.120647946558
+Model Coefficients
+[ 6.45813583e+04 -1.20086135e+05  1.26931932e+05 -8.46598480e+04
+  3.73155209e+04 -1.10334758e+04  2.16590409e+03 -2.70730550e+02
+  1.94974165e+01 -6.15515447e-01]
+0.8702106585933677
+
+
+p_range = np.arange(1.5, 5.45, 0.01)
+
+poly_predictors = pd.DataFrame([p_range, p_range**2, p_range**3,
+                              p_range**4, p_range**5, p_range**6, p_range**7, 
+                              p_range**8, p_range**9, p_range**10]).T  
+
+# Get corresponding y values from the model
+y_values = poly_model.predict(X = poly_predictors)
+
+mtcars.plot(kind="scatter",
+           x="wt",
+           y="mpg",
+           figsize=(9,9),
+           color="black",
+           xlim = (0,7))
+
+# Plot curve line
+plt.plot(p_range,   # X-axis range
+         y_values,          # Predicted values
+         color="blue")
+ Notice how the 10th order polynomial model curves wildly in some places to fit the training data. While this model happens to yield a closer fit to the training data, it will almost certainly fail to generalize well to new data as it leads to absurd predictions such as a car having less than 0 mpg if it weighs 5000lbs.
+
+
+ Let me answer two important questions here: 
+
+First, “How can I know if a problem is linear or non-linear in an easy way?”
+To answer this question, we have to do two things:
+  The first is to visually figure out if the relation is linear or non-linear. It’s best to plot bivariate plots of output variables with each input variable.
+  Also, you can calculate the correlation coefficient between independent and dependent variables, and if for all variables it is 0.7 or higher there is a linear tendency, and, thus, it’s not appropriate to fit a non-linear regression.
+
+  The second thing we have to do is to use non-linear regression instead of linear regression when we cannot accurately model the relationship with linear parameters.
+
+The second important questions is, “How should I model my data, if it displays non-linear on a scatter plot?”
+  Well, to address this, you have to use either a polynomial regression, use a non-linear regression model, or "transform" your data, which is not in scope for this course.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+NON-LINEAR REGRESSION - "https://github.com/Gurubux/CognitiveClass-ML/blob/master/Course_MachineLearningWithPython/3-Regression/3.6Non-LinearRegression/CC_3_6_NonLinearRegression.ipynb"
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+1. Non-linear functions can have elements like exponentials, logarithms, fractions, and others. For example: 
+    y = log(x)
+  Please consider that instead of x, we can use X, which can be polynomial representation of the x`s. In general form it would be written as
+    y = log(X)
+  X = np.arange(-5.0, 5.0, 0.1)
+
+  Y = np.log(X)
+  
+  plt.plot(X,Y) 
+  plt.ylabel('Dependent Variable')
+  plt.xlabel('Indepdendent Variable')
+  plt.show()
+
+
+2. Or even, more complicated such as : 
+    y = log(a x^3 + b x^2 + c x + d)
+
+3. Cubic Function
+    y = a x^3 + b x^2 + c x + d 
+  x = np.arange(-5.0, 5.0, 0.1)
+
+  ##You can adjust the slope and intercept to verify the changes in the graph
+  y = 1*(x**3) + 1*(x**2) + 1*x + 3
+  y_noise = 20 * np.random.normal(size=x.size)
+  ydata = y + y_noise
+  plt.plot(x, ydata,  'bo')
+  plt.plot(x,y, 'r') 
+  plt.ylabel('Dependent Variable')
+  plt.xlabel('Indepdendent Variable')
+  plt.show()
+
+
+
+4. Quadratic
+    Y = X^2
+
+  x = np.arange(-5.0, 5.0, 0.1)
+
+  ##You can adjust the slope and intercept to verify the changes in the graph
+
+  y = np.power(x,2)
+  y_noise = 2 * np.random.normal(size=x.size)
+  ydata = y + y_noise
+  plt.plot(x, ydata,  'bo')
+  plt.plot(x,y, 'r') 
+  plt.ylabel('Dependent Variable')
+  plt.xlabel('Indepdendent Variable')
+  plt.show()
+
+5. Exponential
+  An exponential function with base c is defined by 
+    Y = a + b c^X
+      where b ≠0, c > 0, c ≠1, and x is any real number. The base, c, is constant and the exponent, x, is a variable.
+  X = np.arange(-5.0, 5.0, 0.1)
+  
+  ##You can adjust the slope and intercept to verify the changes in the graph
+  
+  Y= np.exp(X)
+  
+  plt.plot(X,Y) 
+  plt.ylabel('Dependent Variable')
+  plt.xlabel('Indepdendent Variable')
+  plt.show()
+
+
+6. Sigmoidal/Logistic
+              b
+  Y =   a + -----------
+        1 + c⁽ˣ⁻ᵈ⁾
+
+7. The formula for the logistic function is the following:
+              1
+  Y =     -----------
+              β₁(X⁻β₂)
+        1 + e
+  β₁ : Controls the curve`s steepness.
+  β₂ : Slides the curve on the x-axis.
+  
+  def sigmoid(x, Beta_1, Beta_2):
+    y = 1 / (1 + np.exp(-Beta_1*(x-Beta_2)))
+    return y
+
+  #logistic function
+  Y_pred = sigmoid(x_data, beta_1 , beta_2)
+  
+  #plot initial prediction against datapoints
+  plt.plot(x_data, Y_pred*15000000000000.)
+  plt.plot(x_data, y_data, 'ro')
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+https://github.com/Gurubux/CognitiveClass-ML/blob/master/Course_MachineLearningWithPython/3-Regression/3.6Non-LinearRegression/CC_3_6_NonLinearRegression.ipynb
+
+How we find the best parameters for our fit line?
+we can use curve_fit which uses non-linear least squares to fit our sigmoid function, to data. Optimal values for the parameters so that the sum of the squared residuals of sigmoid(xdata, *popt) - ydata is minimized.
+
+"popt" is our optimized parameter/s.
+
+
+  from scipy.optimize import curve_fit
+  popt, pcov = curve_fit(sigmoid, xdata, ydata)
+  #print the final parameters
+  print(" beta_1 = %f, beta_2 = %f" % (popt[0], popt[1]))
+>>>beta_1 = 690.453017, beta_2 = 0.997207
+
+#Now we plot our resulting regresssion model.
+  x = np.linspace(1960, 2015, 55)
+  x = x/max(x)
+  plt.figure(figsize=(8,5))
+  y = sigmoid(x, *popt)
+  plt.plot(xdata, ydata, 'ro', label='data')
+  plt.plot(x,y, linewidth=3.0, label='fit')
+  plt.legend(loc='best')
+  plt.ylabel('GDP')
+  plt.xlabel('Year')
+  plt.show()

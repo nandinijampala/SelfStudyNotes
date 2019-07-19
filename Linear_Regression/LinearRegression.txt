@@ -226,38 +226,51 @@ print(rmse(multi_reg_model.predict(poly_predictors),mtcars["mpg"]))
 
 The new R-squared and lower RMSE suggest this is a better model than any we made previously and we wouldn`t be too concerned about overfitting since it only includes 2 variables and 2 squared terms. Note that when working with multidimensional models, it becomes difficult to visualize results, so you rely heavily on numeric output.
 We could continue adding more explanatory variables in an attempt to improve the model. Adding variables that have little relationship with the response or including variables that are too closely related to one another can hurt your results when using linear regression. You should also be wary of numeric variables that take on few unique values since they often act more like categorical variables than numeric ones.
-
-********************************************************************************************************************************************
-******************************************************************************************************************************************************
-
-LinearRegressionDiagnosticPlots.odt
-Diagnostic Plots
-	-residplot
-	-probplot
-
- 1. "https://zhiyzuo.github.io/Linear-Regression-Diagnostic-in-Python/ "
- 2. "https://medium.com/@neuralnets/statistical-data-visualization-series-with-python-and-seaborn-for-data-science-5a73b128851d "
- 3. "https://medium.com/@emredjan/emulating-r-regression-plots-in-python-43741952c034 "
- 4. "https://robert-alvarez.github.io/2018-06-04-diagnostic_plots/ "
-
-----------------------------------------------------------------------------------------------------------------------------------------
-----------------------------------------------------------------------------------------------------------------------------------------
-"https://www.youtube.com/user/jbstatistics/videos"
-Outliers, Leverage, Influence  -  https://www.youtube.com/watch?v=xc_X9GFVuVU
-Leverage = 1/n + (xᵢ - x̄ )/(TSS)
-Influence = \Cook`s distance
-"https://songhuiming.github.io/pages/2016/11/27/linear-regression-in-python-outliers-leverage-detect/"
+--------------------------------------------------------------------------------------------------
+**************************************************************UDEMY**************************************************************
+--------------------------------------------------------------------------------------------------
+SECTION 4 - Simple Linear Regression
+--------------------------------------------------------------------------------------------------
+    ___________________
+   / y = b₀ + b₁X₁    /
+  /__________________/
 
 
-from statsmodels.stats.outliers_influence import summary_table
+Code 	- simple_linear_regression.py  
+DATASET - Salary Data
+GOAL 	- To predict SALARY based on YearsExperience
 
-diabetes = datasets.load_diabetes()
-X = diabetes.data
-y = diabetes.target
-X2 = sm.add_constant(X)
-est = sm.OLS(y, X2)
-est2 = est.fit()
-st, data, ss2 = summary_table(est2, alpha=0.05)
+--------------------------------------------------------------------------------------------------
+SECTION 5 - Multiple Linear Regression 
+--------------------------------------------------------------------------------------------------
+Linear Model
+    ____________________________________
+   / y = b₀ + b₁X₁ + b₂X₂ .... bₙXₙ    /
+  /__________________________________/
+Code    - multiple_linear_regression_backwordElimination.py  
+DATASET - 50 Startups
+GOAL    - To predict profits based on multiple factors(Independent variables)
+
+Step 1 : Consider the Assumptions that take place in any Linear Regression model
+
+Step 2 : If any Categorical Variable(Non-Numeric Column), create dummy variables for the same
+		 (Note : Should not include all of your dummy variable columns, use N-1 dummy variables only. So if 3 Variables i.e NY, CA,LA then use any 2 only. (DUMMY VARIABLE TRAP))
+Step 3 : Perform Backword Elimination for building the model with appropriate variables
+		 Refer - https://raw.githubusercontent.com/Gurubux/Udemy-ML/master/Machine_Learning_A-Z/Part2-Regression/Section5-Multiple_Linear_Regression/Homework_Solutions/multiple_linear_regression_backwordElimination.py
+Step 3 : Fit
+Step 4 : Predict
+
+WhiteBoard - Refer - https://raw.githubusercontent.com/Gurubux/Udemy-ML/master/Machine_Learning_A-Z/Part2-Regression/Section5-Multiple_Linear_Regression/BackwardElimination.jpg
+
+Extra - 
+BACKWARD ELIMINATION WITH P-VALUES ONLY:
+BACKWARD ELIMINATION WITH P-VALUES AND ADJUSTED R SQUARED:
+https://raw.githubusercontent.com/Gurubux/Udemy-ML/master/Machine_Learning_A-Z/Part2-Regression/Section5-Multiple_Linear_Regression/BACKWARD_ELIMINATION_WITH_P-VALUES_AND_ADJUSTED_R_SQUARED.txt
+
+"ChiSquareAndP-value"
+
+"ProbabiltyInNormalDensityCurves"
+----------------------------------------------------------------------------------------------------
 
 **************************************************************ASSUMPTIONS****************************************************************************************
 ----------------------------------------------------------------------------------------------------------------------------------------
@@ -399,14 +412,14 @@ X 			0.7393	0.2308 		3.20339 0.00136
 
 THE PEARSON CORRELATION
 SPEARMAN`S RANK ORDER CORRELATION
-CHI-SQUARE(X²) TEST
+CHI-SQUARE(X²) TEST #"https://github.com/Gurubux/ML-Analysis-Steps/tree/master/InferentialStatistics/Chi-SquaredTests"
 VARIANCE INFLATION FACTOR-(VIF)
 OUTLIERS, LEVERAGE, INFLUENCE
 COOK`S DISTANCE
 BREUSH-PAGAN TEST:
 HET_GOLDFELDQUANDT
 
-T-Test
+T-Test - #https://github.com/Gurubux/ML-Analysis-Steps/tree/master/InferentialStatistics/HypothesisTestingAndTheT-Test
 	ONE-SAMPLE T-TEST : stats.ttest_1samp() : T-test for the MEAN OF ONE GROUP of scores.
 	TWO-SAMPLE T-TEST stats.ttest_ind(a= minnesota_ages,b= wisconsin_ages, equal_var=False) : T-test for the MEANS OF TWO INDEPENDENT SAMPLES
 	PAIRED T-TEST : stats.ttest_rel(a = before, b = after) : T-test on TWO RELATED samples
@@ -414,17 +427,54 @@ T-Test
 	Type I ERROR 	: "false positive" or "false hit".
 	Type II ERROR 	: "false negative" or "miss".
 
-ANOVA
+ANOVA - #https://github.com/Gurubux/ML-Analysis-Steps/tree/master/InferentialStatistics/AnalysisOfVariance(ANOVA)
 	ONE-WAY ANOVA : stats.f_oneway(asian, black, hispanic, other, white)  
 			  	  : stats.multicomp.pairwise_tukeyhsd(endog=voter_age,     # Data
                           		   				  groups=voter_race,   # Groups
                           		   				  alpha=0.05)          # Significance level
 
+********************************************************************************************************************************************
+********************************************************************EXTRAS**********************************************************************************
+
+LinearRegressionDiagnosticPlots.odt
+Diagnostic Plots
+	-residplot
+	-probplot
+
+ 1. "https://zhiyzuo.github.io/Linear-Regression-Diagnostic-in-Python/ "
+ 2. "https://medium.com/@neuralnets/statistical-data-visualization-series-with-python-and-seaborn-for-data-science-5a73b128851d "
+ 3. "https://medium.com/@emredjan/emulating-r-regression-plots-in-python-43741952c034 "
+ 4. "https://robert-alvarez.github.io/2018-06-04-diagnostic_plots/ "
+
+----------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------
+"https://www.youtube.com/user/jbstatistics/videos"
+Outliers, Leverage, Influence  -  https://www.youtube.com/watch?v=xc_X9GFVuVU
+Leverage = 1/n + (xᵢ - x̄ )/(TSS)
+Influence = Cook`s distance
+"https://songhuiming.github.io/pages/2016/11/27/linear-regression-in-python-outliers-leverage-detect/"
 
 
+from statsmodels.stats.outliers_influence import summary_table
+
+diabetes = datasets.load_diabetes()
+X = diabetes.data
+y = diabetes.target
+X2 = sm.add_constant(X)
+est = sm.OLS(y, X2)
+est2 = est.fit()
+st, data, ss2 = summary_table(est2, alpha=0.05)
 
 
+----------------------------------------------------------------------------------------------------------------------------------------
+Calculate P-Value for Linear Regression
+"https://github.com/Gurubux/StatQuest/tree/master/Calculate_Pvalue"
 
+----------------------------------------------------------------------------------------------------------------------------------------
+
+-------------------------------------------------------------------------------------------------------------------
+LEARNING CURVE ANALYSIS FOR REGRESSION AND CLASSIFICATION - "https://github.com/Gurubux/StatQuest/tree/master/LearningCurve"
+-------------------------------------------------------------------------------------------------------------------
 
 
 
@@ -677,6 +727,9 @@ https://machinelearningmastery.com/linear-regression-for-machine-learning/
 https://towardsdatascience.com/andrew-ngs-machine-learning-course-in-python-linear-regression-dd04fba8e137
 http://www.stat.yale.edu/Courses/1997-98/101/linreg.htm
 https://github.com/Gurubux/CognitiveClass-ML/blob/master/Course/3-Regression/3.2SimpleLinearRegression/CC-3-2-SimpleLinearRegression.odt
+https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3518362/
+https://www.johnwittenauer.net/machine-learning-exercises-in-python-part-2/
+https://www.johnwittenauer.net/machine-learning-exercises-in-python-part-4/
 ****************************************************CODE****************************************************************************
 https://github.com/Gurubux/SelfStudyNotes/blob/master/Linear_Regression/Linear_regression.ipynb
 https://github.com/Gurubux/SelfStudyNotes/blob/master/Linear_Regression/AutoCorrelation.ipynb
