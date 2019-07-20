@@ -85,6 +85,7 @@ Central-Limit-Theorem
 		- Data is normally distributed
 		- You have continous, numeric values
 		- Your variables are linearly related
+COVARIANCE- CORRELATION Coefficient - "https://github.com/Gurubux/ML-Analysis-Steps/tree/master/Correlation_Coefficient"
 ----------------------------------------------------------------------------------------------------------------------
 @NON PARAMETRIC METHODS
 	- Used For Categorical, Non Linearly related, Non Normally distributed variables
@@ -271,3 +272,48 @@ ANOVA - "https://github.com/Gurubux/ML-Analysis-Steps/tree/master/InferentialSta
 			  	  : stats.multicomp.pairwise_tukeyhsd(endog=voter_age,     # Data
                           		   				  groups=voter_race,   # Groups
                           		   				  alpha=0.05)          # Significance level
+
+----------------------------------------------------------------------------------------------------------------------
+TRANSFORM DATASET DISTRIBUTIONS
+----------------------------------------------------------------------------------------------------------------------
+1. Normalization - 			Value of Observation
+				  -------------------------------------
+					Sum of All Observation in variable
+
+2. Standardization - Rescaling Data so it has a zero mean and unit Variance
+
+- Normalizing and transforming features with MinMaxScalar() and fit_transform()
+import sklearn
+from sklearn import preprocessing
+mpg_matrix = mpg.values.reshape(-1,1)
+		>>>
+		array([21. , 21. , 22.8, 21.4, 18.7, 18.1, 14.3, 24.4, 22.8, 19.2, 17.8,
+		       16.4, 17.3, 15.2, 10.4, 10.4, 14.7, 32.4, 30.4, 33.9, 21.5, 15.5,
+		       15.2, 13.3, 19.2, 27.3, 26. , 30.4, 15.8, 19.7, 15. , 21.4])
+		to 
+		array([[21. ],[21. ],[22.8],[21.4],[18.7],[18.1],[14.3],[24.4],[22.8],[19.2],[17.8],[16.4],[17.3],[15.2],[10.4],[10.4],[14.7],[32.4],[30.4],[33.9],[21.5],[15.5],[15.2],[13.3],[19.2],[27.3],[26. ],[30.4],[15.8],[19.7],[15. ],[21.4]])
+
+scaled = preprocessing.MinMaxScaler()
+scaled_mpg = scaled.fit_transform(mpg_matrix)
+		>>>
+		array([[0.45106383],[0.45106383],[0.52765957],[0.46808511],[0.35319149],[0.32765957],[0.16595745],[0.59574468],[0.52765957],[0.37446809],[0.31489362],[0.25531915],[0.29361702],[0.20425532],[0.        ],[0.        ],[0.18297872],[0.93617021],[0.85106383],[1.        ],[0.47234043],[0.21702128],[0.20425532],[0.12340426],[0.37446809],[0.71914894],[0.66382979],[0.85106383],[0.22978723],[0.39574468],[0.19574468],[0.46808511]])
+plt.plot(scaled_mpg)
+
+# Set Y values Range instead of default 0 to 1
+mpg_matrix = mpg.values.reshape(-1,1)
+scaled = preprocessing.MinMaxScaler(feature_range=(0,10))
+scaled_mpg = scaled.fit_transform(mpg_matrix)
+plt.plot(scaled_mpg)
+
+
+-  Using scale() to scale your features
+from sklearn.preprocessing import scale
+standardized_mpg = scale(mpg, axis=0, with_mean=False, with_std=False) # Y axis is same 
+plt.plot(standardized_mpg) 
+
+standardized_mpg = scale(mpg) # Y axis is changed into - and + values
+plt.plot(standardized_mpg)
+
+
+
+

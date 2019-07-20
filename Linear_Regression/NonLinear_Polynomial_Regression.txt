@@ -136,7 +136,7 @@ To answer this question, we have to do two things:
 
 The second important questions is, “How should I model my data, if it displays non-linear on a scatter plot?”
   Well, to address this, you have to use either a polynomial regression, use a non-linear regression model, or "transform" your data, which is not in scope for this course.
-
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 NON-LINEAR REGRESSION - "https://github.com/Gurubux/CognitiveClass-ML/blob/master/Course_MachineLearningWithPython/3-Regression/3.6Non-LinearRegression/CC_3_6_NonLinearRegression.ipynb"
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -256,3 +256,122 @@ we can use curve_fit which uses non-linear least squares to fit our sigmoid func
   plt.ylabel('GDP')
   plt.xlabel('Year')
   plt.show()
+
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+*************************************************************************************************************************************
+  POLYNOMIAL REGRESSION AND PIPELINES - "https://github.com/Gurubux/CognitiveClass-ML/tree/master/2-AppliedDataScienceWithPython/2-2-DataAnalysisWithPython"
+*************************************************************************************************************************************
+Polynomial regression is a particular case of the general linear regression model or multiple linear regression models.
+We get non-linear relationships by squaring or setting higher-order terms of the predictor variables.
+*NOTE* "Although the predictor variables of Polynomial linear regression are not linear the relationship between the parameters or coefficients is linear. "
+There are different orders of polynomial regression:
+₁₂₃
+        Quadratic - 2nd order
+      𝑌ℎ𝑎𝑡=𝑎+𝑏₁𝑋²+𝑏₂𝑋²
+       
+        Cubic - 3rd order
+      𝑌ℎ𝑎𝑡=𝑎+𝑏₁𝑋2+𝑏₂𝑋²+𝑏₃𝑋³
+
+        Higher order:
+      𝑌=𝑎+𝑏₁𝑋+𝑏₂𝑋²+𝑏₃𝑋³....
+
+x = df['highway-mpg']
+y = df['price']
+
+# Here we use a polynomial of the 3rd order (cubic) 
+f = np.polyfit(x, y, 3)
+p = np.poly1d(f)
+print(p)
+>>>              
+  -1.557 𝑋³ + 204.8 𝑋² - 8965 x + 1.379e+05
+
+PlotPolly(p, x, y, 'highway-mpg')
+
+def PlotPolly(model, independent_variable, dependent_variabble, Name):
+    x_new = np.linspace(15, 55, 100)
+    y_new = model(x_new)
+
+    plt.plot(independent_variable, dependent_variabble, '.', x_new, y_new, '-')
+    plt.title('Polynomial Fit with Matplotlib for Price ~ Length')
+    ax = plt.gca()
+    ax.set_facecolor((0.898, 0.898, 0.898))
+    fig = plt.gcf()
+    plt.xlabel(Name)
+    plt.ylabel('Price of Cars')
+
+    plt.show()
+    plt.close()
+
+"We can already see from plotting that this polynomial model performs better than the linear model. This is because the generated polynomial function "hits" more of the data points."
+
+
+The analytical expression for Multivariate Polynomial function gets complicated. For example, the expression for a second-order (degree=2)polynomial with two variables is given by:
+
+    𝑌ℎ𝑎𝑡=𝑎+𝑏1𝑋1+𝑏2𝑋2+𝑏3𝑋1𝑋2+𝑏4𝑋21+𝑏5𝑋22
+Create 11 order polynomial model with the variables x and y from above
+# Write your code below and press Shift+Enter to execute 
+f_1 = np.polyfit(x, y, 11)
+p_1 = np.poly1d(f_1)
+print(p_1)
+PlotPolly(p, x, y, 'highway-mpg')
+------------------------------------------------------------
+We can perform a polynomial transform on multiple features. First, we import the module:
+------------------------------------------------------------
+from sklearn.preprocessing import PolynomialFeatures
+
+pr=PolynomialFeatures(degree=2) #We create a PolynomialFeatures object of degree 2:
+>>>PolynomialFeatures(degree=2, include_bias=True, interaction_only=False)
+Z_pr=pr.fit_transform(Z)
+
+Z.shape
+>>>(201, 4)
+Z_pr.shape
+>>>(201, 15)
+------------------------------------------------------------
+PIPELINES
+Data Pipelines simplify the steps of processing the data. We use the module Pipeline to create a pipeline. We also use StandardScaler as a step in our pipeline.
+------------------------------------------------------------
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+Input=[('scale',StandardScaler()), ('polynomial', PolynomialFeatures(include_bias=False)), ('model',LinearRegression())]
+pipe=Pipeline(Input)
+>>>
+  Pipeline(memory=None,
+         steps =[('scale', StandardScaler(copy=True, with_mean=True, with_std=True)),
+               ('polynomial', PolynomialFeatures(degree=2, include_bias=False, interaction_only=False)), 
+               ('model', LinearRegression(copy_X=True, fit_intercept=True, n_jobs=None, normalize=False))
+              ])
+
+pipe.fit(Z,y)
+>>> 
+  Pipeline(memory=None,
+         steps =[('scale', StandardScaler(copy=True, with_mean=True, with_std=True)), 
+                ('polynomial', PolynomialFeatures(degree=2, include_bias=False, interaction_only=False)), 
+                ('model', LinearRegression(copy_X=True, fit_intercept=True, n_jobs=None, normalize=False))])
+
+ypipe=pipe.predict(Z)
+ypipe[0:4]
+>>> array([13102.74784201, 13102.74784201, 18225.54572197, 10390.29636555])
+
+distplot()
+plt.figure(figsize=(width, height))
+
+
+ax1 = sns.distplot(df['price'], hist=False, color="r", label="Actual Value")
+sns.distplot(ypipe, hist=False, color="b", label="Fitted Values" , ax=ax1)
+
+
+plt.title('Actual vs Fitted Values for Price')
+plt.xlabel('Price (in dollars)')
+plt.ylabel('Proportion of Cars')
+
+plt.show()
+plt.close()
+
+------------------------------------------------------------
+# Write your code below and press Shift+Enter to execute 
+pipe_2 = Pipeline([('scale',StandardScaler()), ('model',LinearRegression())])
+pipe_2.fit(Z,y)
+ypipe_2=pipe_2.predict(Z)

@@ -5,9 +5,9 @@ EVALUATION METRICS
 
 
 
-
+********************************************************************************************************************************************
 -------------------------------------------------------------------------------------------------------------------
-REGRESSION EVALUATION METRICS
+REGRESSION EVALUATION METRICS - https://github.com/Gurubux/SelfStudyNotes/tree/master/Linear_Regression
 -------------------------------------------------------------------------------------------------------------------
 	      							         ₙ
 	MAE (Mean Absolute Error) 		=  1/n   Σ | yᵢ - ŷ |
@@ -141,9 +141,10 @@ Two types of evaluation approaches that can be used to achieve this goal.These a
 	cross_val_score(rf_class, data_input, data_output, scoring='accuracy', cv = 10)
 
 ********************************************************************************************************************************************	
--------------------------------------------------------------------------------------------------------------------
-CLASSIFICATION EVALUATION METRICS
--------------------------------------------------------------------------------------------------------------------
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+				CLASSIFICATION EVALUATION METRICS - https://github.com/Gurubux/SelfStudyNotes/tree/master/Logistic_Regression
+---------------------------------------------------------------------------------------------------------------------------------------------
 In "classification" problems, we use two types of algorithms (dependent on the kind of output it creates) 
 	Class output : Algorithms like SVM and KNN create a class output. For instance, in a binary classification problem, the outputs will be either 0 or 1. However, today we have algorithms which can convert these class outputs to probability. But these algorithms are not well accepted by the statistics community.
 	Probability output : Algorithms like Logistic Regression, Random Forest, Gradient Boosting, Adaboost etc. give probability outputs. Converting probability outputs to Class output is just a matter of creating a threshold probability.
@@ -153,6 +154,11 @@ In "regression" problems, we do not have such inconsistencies in output. The out
 
 
 
+SENSITIVITY-SPECIFICITY-PRECISION-ACCURACY CONFUSION MATRIX
+ # https://github.com/Gurubux/ML-Analysis-Steps/tree/master/Confusion-Matrix_Sensitivity-Recall_Specificity_Precision_Accuracy
+
+AREA UNDER THE RECEIVER OPERATING CHARACTERISTIC CURVE ( AUC ROC  )
+"https://github.com/Gurubux/ML-Analysis-Steps/tree/master/ROC_AUC"
 
 
 
@@ -161,12 +167,14 @@ In "regression" problems, we do not have such inconsistencies in output. The out
 
 
 
-
-
-
-
+********************************************************************************************************************************************
+--------------------------------------------------------------------------------------------------------------------------
+REGRESSION and CLASSIFICATION
 --------------------------------------------------------------------------------------------------------------------------
 
+
+CROSS-VALIDATION
+"https://github.com/Gurubux/ML-Analysis-Steps/tree/master/Cross-Validation"
 
 GridSearchCV(scoring='')
 "https://scikit-learn.org/stable/modules/model_evaluation.html#scoring-parameter"
