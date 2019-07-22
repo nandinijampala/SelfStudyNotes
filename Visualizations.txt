@@ -198,7 +198,7 @@ def plot_roc_curve(fpr, tpr):
     plt.show()
 plot_roc_curve(fpr, tpr)
 
-
+\PRECISION-RECALL CURVE
 def plot_precision_recall_curve(recall,precision):
 	# plot no skill
 	plt.plot([0, 1], [0.5, 0.5], linestyle='--')
@@ -208,12 +208,12 @@ def plot_precision_recall_curve(recall,precision):
 	plt.show()
 plot_precision_recall_curve(recall,precision)
 
-#Cumulative Gains Curve
+\CUMULATIVE GAINS CURVE
 import scikitplot as skplt
 skplt.metrics.plot_cumulative_gain(y_test, estimator.predict_proba(X_test))
 plt.show()
 
-# Lift Chart - lift curve
+\LIFT CHART - LIFT CURVE
 skplt.metrics.plot_lift_curve(y_test, estimator.predict_proba(X_test))
 plt.show()
 
