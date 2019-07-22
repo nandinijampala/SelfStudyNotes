@@ -145,6 +145,8 @@ Two types of evaluation approaches that can be used to achieve this goal.These a
 ---------------------------------------------------------------------------------------------------------------------------------------------
 				CLASSIFICATION EVALUATION METRICS - https://github.com/Gurubux/SelfStudyNotes/tree/master/Logistic_Regression
 ---------------------------------------------------------------------------------------------------------------------------------------------
+"https://www.analyticsvidhya.com/blog/2016/02/7-important-model-evaluation-error-metrics/"
+
 In "classification" problems, we use two types of algorithms (dependent on the kind of output it creates) 
 	Class output : Algorithms like SVM and KNN create a class output. For instance, in a binary classification problem, the outputs will be either 0 or 1. However, today we have algorithms which can convert these class outputs to probability. But these algorithms are not well accepted by the statistics community.
 	Probability output : Algorithms like Logistic Regression, Random Forest, Gradient Boosting, Adaboost etc. give probability outputs. Converting probability outputs to Class output is just a matter of creating a threshold probability.
@@ -168,7 +170,7 @@ AREA UNDER THE RECEIVER OPERATING CHARACTERISTIC CURVE ( AUC ROC  )
 	roc_auc 	= auc(fpr, tpr)
 	auc 		= roc_auc_score(y_test, probs)
 	plot_roc_curve(fpr, tpr)
-	
+
 	from sklearn.metrics import precision_recall_curve,auc,average_precision_score,f1_score
 	precision, recall, thresholds = precision_recall_curve(y_test, probs)
 	auc = auc(recall, precision)
@@ -177,6 +179,122 @@ AREA UNDER THE RECEIVER OPERATING CHARACTERISTIC CURVE ( AUC ROC  )
 	plot_precision_recall_curve(recall,precision)
 
 
+
+CUMULATIVE GAINS CURVE
+Cumulative Gains Curve is Precentage of Sample[0 to 1]  V/S Gain[0 to 1]
+
+"https://stackoverflow.com/questions/42699243/how-to-build-a-lift-chart-a-k-a-gains-chart-in-python"
+from scikitplot.metrics import plot_cumulative_gain
+plot_cumulative_gain(y_test, estimator.predict_proba(X_test))
+
+
+
+LIFT CHART
+The lift curve is an evaluation curve that assesses the performance of your model. It shows how many times more than average the model reaches targets.
+Lift curve is Precentage of Sample[0 to 1]  V/S Lift[1 to Max]
+"https://www.neuraldesigner.com/blog/methods-binary-classification"
+"https://campus.datacamp.com/courses/foundations-of-predictive-analytics-in-python-part-1/explaining-model-performance-to-business?ex=7"
+
+from scikitplot.metrics import plot_lift_curve
+# Plot the lift curve
+plot_lift_curve(y_test, estimator.predict_proba(X_test))
+plt.show()
+
+
+
+
+
+GINI COEFFICIENT
+"https://www.analyticsvidhya.com/blog/2016/02/7-important-model-evaluation-error-metrics/"
+
+Gini = 2*AUC - 1
+
+
+
+KOLOMOGOROV SMIRNOV CHART
+"https://www.datavedas.com/model-evaluation-in-python/"
+def Kolomogorov_Smirnov_chart(data):
+	df1 = pd.pivot_table(data=Train_Data1,index=['Decile'],values=['Defaulter','Non-Defaulter','Probability'],
+	                     aggfunc={'Defaulter':[np.sum],
+	                              'Non-Defaulter':[np.sum],
+	                              'Probability' : [np.min,np.max]})
+	df1.reset_index()
+	df1.columns = ['Defaulter_Count','Non-Defaulter_Count','max_score','min_score']
+	df1['Total_Cust'] = df1['Defaulter_Count']+df1['Non-Defaulter_Count']
+	
+	
+	df2 = df1.sort_values(by='min_score',ascending=False)
+	
+	df2['Default_Rate'] = (df2['Defaulter_Count'] / df2['Total_Cust']).apply('{0:.2%}'.format)
+	default_sum = df2['Defaulter_Count'].sum()
+	non_default_sum = df2['Non-Defaulter_Count'].sum()
+	df2['Default %'] = (df2['Defaulter_Count']/default_sum).apply('{0:.2%}'.format)
+	df2['Non_Default %'] = (df2['Non-Defaulter_Count']/non_default_sum).apply('{0:.2%}'.format)
+	
+	df2['ks_stats'] = np.round(((df2['Defaulter_Count'] / df2['Defaulter_Count'].sum()).cumsum() -(df2['Non-Defaulter_Count'] / df2['Non-Defaulter_Count'].sum()).cumsum()), 4) * 100
+	flag = lambda x: '*****' if x == df2['ks_stats'].max() else ''
+	df2['max_ks'] = df2['ks_stats'].apply(flag)
+	df2	
+
+Kolomogorov_Smirnov_chart(Train_Data1)
+
+13.
+CONCORDANT – DISCORDANT RATIO
+"https://www.analyticsvidhya.com/blog/2016/02/7-important-model-evaluation-error-metrics/"
+Concordant ratio of more than 60% is considered to be a good model. This metric generally is not used when deciding how many customer to target etc. It is primarily used to access the model’s predictive power. For decisions like how many to target are again taken by KS / Lift charts.
+(conc - disc)/pairs_tested
+ #THE FOLLOWING CODE CALCULATES CONCORDANCE AND DISCORDANCE
+"https://incipientanalyst.wordpress.com/2017/08/08/generic-python-code-for-classification-techniques/"
+#THE FOLLOWING CODE CALCULATES CONCORDANCE AND DISCORDANCE
+def concordance_discordance(model,X):
+    Probability = estimator.predict_proba(X)
+    Probability1 = pd.DataFrame(Probability)
+    Probability1.columns = ['Prob_0','Prob_1']
+    TruthTable = pd.merge(data.iloc[:,-1], Probability1[['Prob_1']], how='inner', left_index=True, right_index=True)
+    print(TruthTable.head())
+    zeros = TruthTable[(TruthTable.iloc[:,0]==0)].reset_index().drop(['index'], axis = 1)
+    ones = TruthTable[(TruthTable.iloc[:,0]==1)].reset_index().drop(['index'], axis = 1)
+    from bisect import bisect_left, bisect_right
+    zeros_list = sorted([zeros.iloc[j,1] for j in zeros.index])
+    zeros_length = len(zeros_list)
+    disc = 0
+    ties = 0
+    conc = 0
+    for i in ones.index:
+        cur_conc = bisect_left(zeros_list, ones.iloc[i,1])
+        cur_ties = bisect_right(zeros_list, ones.iloc[i,1]) - cur_conc
+        conc += cur_conc
+        ties += cur_ties
+    pairs_tested = zeros_length * len(ones.index)
+    disc = pairs_tested - conc - ties
+    print('Pairs = ', pairs_tested)
+    print('Conc = ', conc)
+    print('Disc = ', disc)
+    print('Tied = ', ties)
+    concordance = round(conc/pairs_tested,2)
+    discordance = round(disc/pairs_tested,2)
+    ties_perc = round(ties/pairs_tested,2)
+    Somers_D = round((conc - disc)/pairs_tested,2)
+    print('Concordance = ', concordance, '%')
+    print('Discordance = ', discordance, '%')
+    print('Tied = ', ties_perc, '%')
+    print('Somers D = ', Somers_D)
+concordance_discordance()
+>>>
+   Admitted    Prob_1
+0         0  0.380022
+1         0  0.239635
+2         0  0.373267
+3         1  0.645897
+4         1  0.760383
+Pairs =  2400
+Conc =  2219
+Disc =  181
+Tied =  0
+Concordance =  0.92 %
+Discordance =  0.08 %
+Tied =  0.0 %
+Somers D =  0.85
 
 
 ********************************************************************************************************************************************

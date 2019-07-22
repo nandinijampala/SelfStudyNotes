@@ -256,53 +256,124 @@ PRECISION-RECALL CURVE -  (precision_recall_curve, AUC, average_precision_score,
 	BIC
 		[No of variable*log(No of obs)] - [2*-Log Likelihood]
 
+def log_likelihood(x, y, weights):
+    z = np.dot(x, weights)
+    ll = np.sum( y*z - np.log(1 + np.exp(z)) )
+    return ll
+def gradient_ascent(X, h, y):
+    return np.dot(X.T, y - h)
+def update_weight_mle(weight, learning_rate, gradient):
+    return weight + learning_rate * gradient
+
+8. Cross-validation scores - gridSearchCV
+from sklearn.model_selection import cross_val_score
+scores = cross_val_score(estimator, X, y, cv=5)
+scores       
+
+
+parameters = {'C':[0.01,0.1,1,10],'solver':['newton-cg', 'lbfgs',  'sag', 'saga'],'penalty' : ['l2' ,'none']}
+from sklearn.model_selection import GridSearchCV
+#LR_1 = LogisticRegression(C=0.1, solver='liblinear').fit(X_train,y_train)
+LR_1 = LogisticRegression()
+cv = GridSearchCV(LR_1,parameters, cv = 5)
+cv.fit(X_train,y_train)
+print_results(cv)   
 
 
 
-Binary classification tests.
-Conversion rates.
-Cumulative gain.
+9. Cumulative gain.
+Cumulative Gains Curve is Precentage of Sample[0 to 1]  V/S Gain[0 to 1]
+
+"https://stackoverflow.com/questions/42699243/how-to-build-a-lift-chart-a-k-a-gains-chart-in-python"
+from scikitplot.metrics import plot_cumulative_gain
+plot_cumulative_gain(y_test, estimator.predict_proba(X_test))
+
+
+
+
+10.
 Lift chart.
+The lift curve is an evaluation curve that assesses the performance of your model. It shows how many times more than average the model reaches targets.
+Lift curve is Precentage of Sample[0 to 1]  V/S Lift[1 to Max]
 "https://www.neuraldesigner.com/blog/methods-binary-classification"
+"https://campus.datacamp.com/courses/foundations-of-predictive-analytics-in-python-part-1/explaining-model-performance-to-business?ex=7"
+
+from scikitplot.metrics import plot_lift_curve
+# Plot the lift curve
+plot_lift_curve(y_test, estimator.predict_proba(X_test))
+plt.show()
+
+
+11. Gini Coefficient
+"https://www.analyticsvidhya.com/blog/2016/02/7-important-model-evaluation-error-metrics/"
+
+Gini = 2*AUC - 1
+Gini is nothing but ratio between area between the ROC curve and the diagnol line & the area of the above triangle. 
+#Gini above 60% is a good model. For the case in hand we get Gini as 92.7%.
+
+12.
+Kolomogorov Smirnov chart
+"https://www.datavedas.com/model-evaluation-in-python/"
+Train_Data1 = pd.DataFrame(y_train)
+Train_Data1['Prob'] = estimator.predict_proba(X_train)[:, 1]
+Train_Data1['decile'] = pd.qcut(Train_Data1['Prob'],10,labels=['1','2','3','4','5','6','7','8','9','10'])
+Train_Data1.columns = ['Defaulter','Probability','Decile']
+Train_Data1['Non-Defaulter'] = 1-Train_Data1['Defaulter']
+
+Train_Data1.head()
+Kolomogorov_Smirnov_chart(Train_Data1)
+>>>
+		Defaulter_Count	Non-Defaulter_Count	max_score	min_score	Total_Cust	Default_Rate	Default %	Non_Default %	ks_stats	max_ks
+Decile										
+10					 6		0				0.869832	0.847041	6			100.00%			17.65%		0.00%			17.65	
+9					 6		0				0.809714	0.772197	6			100.00%			17.65%		0.00%			35.29	
+8					 5		1				0.768802	0.754434	6			83.33%			14.71%		3.85%			46.15	
+7					 6		0				0.753353	0.709390	6			100.00%			17.65%		0.00%			63.80	
+6					 4		2				0.695553	0.661380	6			66.67%			11.76%		7.69%			67.87	
+5					 5		1				0.651538	0.608318	6			83.33%			14.71%		3.85%			78.73		*****
+4					 2		4				0.597930	0.488699	6			33.33%			5.88%		15.38%			69.23	
+3					 0		6				0.482329	0.424284	6			0.00%			0.00%		23.08%			46.15	
+2					 0		6				0.423319	0.406785	6			0.00%			0.00%		23.08%			23.08	
+1					 0		6				0.373267	0.239635	6			0.00%			0.00%		23.08%			-0.00	
+
+
+
+
+13.
+Concordant – Discordant ratio
+"https://www.analyticsvidhya.com/blog/2016/02/7-important-model-evaluation-error-metrics/"
+Concordant ratio of more than 60% is considered to be a good model. This metric generally is not used when deciding how many customer to target etc. It is primarily used to access the model’s predictive power. For decisions like how many to target are again taken by KS / Lift charts.
+(conc - disc)/pairs_tested
+(Concordant - Discordant) / Total pairs
+ #THE FOLLOWING CODE CALCULATES CONCORDANCE AND DISCORDANCE
+"https://incipientanalyst.wordpress.com/2017/08/08/generic-python-code-for-classification-techniques/"
+#THE FOLLOWING CODE CALCULATES CONCORDANCE AND DISCORDANCE
+concordance_discordance(estimator,X)
+>>>
+   Admitted    Prob_1
+0         0  0.380022
+1         0  0.239635
+2         0  0.373267
+3         1  0.645897
+4         1  0.760383
+Pairs =  2400
+Conc =  2219
+Disc =  181
+Tied =  0
+Concordance =  0.92 %
+Discordance =  0.08 %
+Tied =  0.0 %
+Somers D =  0.85
+
+
 
 
 "https://www.linkedin.com/pulse/logistic-regression-algorithm-step-amit-kumar/"
-\Beta / Coefficient of Independent variable:
-covariance(Independent ,Dependent ) / variance(Independent )
-
-\Correlation between Independent and Dependent variable:
-covariance(Independent variable,Dependent variable) / [variance(Independent variable)*variance(Dependent variable)]
-
-
-
-\Area Under Curve /C Statistic :
-Percent Concordant + 0.5 * Percent Tied
-
-A pair is concordant when event equal to one has a higher predicted probability than event equal to zero. And discordant is otherwise
-The ROC curve is a graphical plot that illustrates the performance of any binary classifier system as its discrimination threshold is varied
-
-\Gini/Somer’s D :
-2*Area Under Curve - 1
-
-OR
-
-(Concordant - Discordant) / Total pairs
 
 Divergence:
 [(mean when event equal to one – mean when event equal to zero)^2] / [0.5(variance when event equal to one + variance when event equal to zero)]
+"http://machinethinker.com/2017/09/11/a-simple-introduction-to-kullback-leibler-divergence-through-python-code/"
 
-\Variance Inflation Factor (VIF):
-VIF is used to identify the multicollinearity in the model while linear regression is used to calculate the VIF. Each independent variable will regress with rest of independent variables and calculation is
-TSS = SUM[Dependent variable - mean(Dependent variable)]^2
-
-RSS = SUM[Dependent variable - predicted(Dependent variable)]^2
-
-R Squared = 1.0 - (RSS/TSS)
-
-VIF = 1.0 / (1.0 - R Squared)
-
-\Standard Error of Coefficient:
-The standard error of the coefficient estimates the variability that would be obtained if samples are taken from the same population again and again. The calculation assumes that the sample size and the coefficients to estimate would remain same if the sample is taken repeatedly. Use standard error of the coefficient to measure the precision of the estimate of the coefficient. The smaller the standard error, the more precise the estimate.
 
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -322,6 +393,15 @@ Correlation Coefficient
 AUC ROC PRECISION RECALL
 	plot_roc_curve(fpr, tpr)
 	plot_precision_recall_curve(recall,precision)
+
+
+from scikitplot.metrics import plot_lift_curve
+plot_lift_curve(y_test, estimator.predict_proba(X_test))
+
+from scikitplot.metrics import plot_cumulative_gain
+plot_cumulative_gain(y_test, estimator.predict_proba(X_test))
+
+
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ****************************************************LOGISTIC VS LINEAR REGRESSION****************************************************
 Steps:
