@@ -3,8 +3,7 @@ VISUALIZATION
 ----------------------------------------------------------------------------------------------------------------------
 REGRESSION - https://github.com/Gurubux/SelfStudyNotes/tree/master/Linear_Regression
 ----------------------------------------------------------------------------------------------------------------------
-import scipy.stats as stats
-stats.probplot(residuals, dist="norm", plot=plt)
+
 
 
 
@@ -23,9 +22,11 @@ pd.plotting.scatter_matrix(DF);
 sns.distplot(x)
 
 #"https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.probplot.html"
-#QQplot
-sns.probplot(x) 
+\#QQplot
+import scipy.stats as stats
+stats.probplot(residuals, dist="norm", plot=plt)
 
+\CORRELATION COEFFICIENT
 def plot_Correlation_Coefficient_2(corr):
     sns.heatmap(corr, vmax=.8, square=True);
     plt.show()
@@ -45,24 +46,23 @@ def plot_Correlation_Coefficient_1(corr):
     plt.show()
 
 
-#Leverage plot
+\#Leverage plot
 from statsmodels.graphics.regressionplots import plot_leverage_resid2
 plot_leverage_resid2(est2)
 
-# Cook'Distance Plot
+\# Cook'Distance Plot
 influence = est2.get_influence()
 #c is the distance and p is p-value
 (c, p) = influence.cooks_distance
 ax1.stem(np.arange(len(c)), c, markerfmt=",")
 
-# Influence Plot
+\# Influence Plot
 from statsmodels.graphics.regressionplots import influence_plot
 influence_plot(est2 , criterion="cooks")
 
 
 
 draw_z_score(x, x<z0, 0, 1, 'z<-0.75')
-
 sample_means = normal_curve_confidence_shade(population_ages,minnesota_ages,100)
 
 
@@ -74,9 +74,164 @@ sample_means = normal_curve_confidence_shade(population_ages,minnesota_ages,100)
 
 ******************************************************************************************************************
 CLASSIFICATION
+
+
+\CONFUSION MATRIX
+import itertools
+from sklearn.metrics import confusion_matrix
+def plot_confusion_matrix(y_true,y_pred, normalize=False): # This function prints and plots the confusion matrix.
+    cm = confusion_matrix(y_true, y_pred, labels=[0, 1])
+    classes=["Admitted", "NotAdmitted"]
+    cmap = plt.cm.Blues
+    title = "Confusion Matrix"
+    if normalize:
+        cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+        cm = np.around(cm, decimals=3)
+    plt.imshow(cm, interpolation='nearest', cmap=cmap)
+    plt.title(title)
+    plt.colorbar()
+    tick_marks = np.arange(len(classes))
+    plt.xticks(tick_marks, classes, rotation=45)
+    plt.yticks(tick_marks, classes)
+    thresh = cm.max() / 2.
+    for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
+        plt.text(j, i, cm[i, j],
+                 horizontalalignment="center",
+                 color="white" if cm[i, j] > thresh else "black")
+    plt.tight_layout()
+    plt.ylabel('True label')
+    plt.xlabel('Predicted label')
+
+predictions_ = estimator.predict(X_test) #for Confusion Matrix
+plot_confusion_matrix(y_true,predictions_, normalize=True)    
+
+
+\AUC ROC
+"https://github.com/Gurubux/ML-Analysis-Steps/tree/master/ROC_AUC"
+import seaborn as sns
+sns.set('talk', 'whitegrid', 'dark', font_scale=1,rc={"lines.linewidth": 2, 'grid.linestyle': '--'})
+def plotAUC(truth, pred, lab): #plotAUC(y_test,rfPredictproba, 'Random Forest')
+    from sklearn import metrics
+    fpr, tpr, _ = metrics.roc_curve(truth,pred)
+    roc_auc = metrics.auc(fpr, tpr)
+    lw = 2
+    c = (np.random.rand(), np.random.rand(), np.random.rand())
+    plt.plot(fpr, tpr, color= c,lw=lw, label= lab +'(AUC = %0.2f)' % roc_auc)
+    plt.plot([0, 1], [0, 1], color='navy', lw=lw, linestyle='--')
+    plt.xlim([0.0, 1.0])
+    plt.ylim([0.0, 1.0])
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.title('ROC curve') #Receiver Operating Characteristic 
+    plt.legend(loc="upper right")
+
+predictproba = estimator.predict_proba(X_test)[:,1]
+plotAUC(y_test,predictproba, 'Logistic Regression')
+
+#ROC CURVE PLOT
+def plot_roc_curve(fpr, tpr):  
+    plt.plot(fpr, tpr, color='orange', label='ROC')
+    plt.plot([0, 1], [0, 1], color='darkblue', linestyle='--')
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.title('Receiver Operating Characteristic (ROC) Curve')
+    plt.legend()
+    plt.show()
+plot_roc_curve(fpr, tpr)
+
+
+def plot_precision_recall_curve(recall,precision):
+	# plot no skill
+	plt.plot([0, 1], [0.5, 0.5], linestyle='--')
+	# plot the precision-recall curve for the model
+	plt.plot(recall, precision, marker='.')
+	# show the plot
+	plt.show()
+plot_precision_recall_curve(recall,precision)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ******************************************************************************************************************
 CLUSTERING
 ******************************************************************************************************************
+
+
+
+
+******************************************************************************************************************
+COMMON
+******************************************************************************************************************
+
+\Learning Curve
+Ideal Learning Curve [Irreducible Error]- https://raw.githubusercontent.com/Gurubux/StatQuest/master/LearningCurve/LearningCurve_Images/Ideal_Learning_Curve.png
+"https://github.com/Gurubux/StatQuest/tree/master/LearningCurve"
+
+Code:"https://github.com/Gurubux/Data-Lit/blob/master/2-StatisticsAndProbability/2.1-CreditScoring/Loan_Default_Prediction.ipynb"
+import numpy as np
+from sklearn.svm import SVC
+from sklearn.model_selection import learning_curve
+from sklearn.model_selection import ShuffleSplit
+
+def plot_learning_curve(estimator, title, X, y, ylim=None, cv=None,n_jobs=1, train_sizes=np.linspace(.1, 1.0, 5)"""Or train_sizes=[ 880 2860 4840 6820 8800]"""):
+    #plotting basic
+    plt.figure()
+    plt.title(title)
+    if ylim is not None:
+        plt.ylim(*ylim)
+    plt.xlabel("Training examples")
+    plt.ylabel("Score")
+
+    # Calling Funtion learning_curve
+    train_sizes, train_scores, test_scores = learning_curve(
+        estimator, X, y, cv=cv, n_jobs=n_jobs, train_sizes=train_sizes)
+    
+    # Calculate Mean and STD of the train_scores and test_scores
+    train_scores_mean = np.mean(train_scores, axis=1)
+    train_scores_std = np.std(train_scores, axis=1)
+    test_scores_mean = np.mean(test_scores, axis=1)
+    test_scores_std = np.std(test_scores, axis=1)
+   
+    plt.grid()
+    
+    #Confidence Intervals
+    plt.fill_between(train_sizes, train_scores_mean - 2*train_scores_std,
+                     train_scores_mean + 2*train_scores_std, alpha=0.1,
+                     color="r")
+    plt.fill_between(train_sizes, test_scores_mean - 2*test_scores_std,
+                     test_scores_mean + 2*test_scores_std, alpha=0.1, color="g")
+
+    #Plotting train_scores_mean and test_scores_mean
+    plt.plot(train_sizes, train_scores_mean, 'o-', color="r",
+             label="Training score")
+    plt.plot(train_sizes, test_scores_mean, 'o-', color="g",
+             label="Cross-validation score")
+
+    plt.legend(loc="best")
+    return plt
+
+
+X, y = data_clean.iloc[:,:-1].values, data_clean.iloc[:,-1].values
+
+title = "Learning Curves (Logistic Regression)"
+
+cv = ShuffleSplit(n_splits=100, test_size=0.2, random_state=0) # cv = 5 # Cross validation with 100 iterations to get smoother mean test and train score curves, each time with 20% data randomly selected as a validation set.
+
+estimator = linear_model.LogisticRegression() # For Regression : LinearRegression, SVR, RandomForest etc. For Classification LogisticRegression, SVC, RandomForest etc.
+
+plt = plot_learning_curve(estimator, title, X, y, ylim=(0.75, 0.90), cv=cv, n_jobs=4)
+plt.show()
+
 
 
 

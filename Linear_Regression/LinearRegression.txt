@@ -295,6 +295,7 @@ X 			0.7393	0.2308 		3.20339 0.00136
 "https://www.statisticssolutions.com/assumptions-of-linear-regression/"
 "http://people.duke.edu/~rnau/testing.htm"
 "http://www.statsmodels.org/devel/examples/notebooks/generated/regression_diagnostics.html"
+
 @L M E A N H 
 
 1. LINEARITY  
@@ -324,6 +325,7 @@ X 			0.7393	0.2308 		3.20339 0.00136
 
 	- Detection using
 		1. GOldfeldt-Quant test
+			The test splits the data into two groups and tests to see if the variances of the residuals are similar across the groups. If homoscedasticity is present, a non-linear correction might fix the problem.
 		2. Breusch-Pagan test 
 			(Both these tests give a p-vale that can be use to detect if HETEROSKEDASTICITY exists or not.)
 
@@ -342,6 +344,7 @@ X 			0.7393	0.2308 		3.20339 0.00136
 	- The Standard Error is unreliable although Coeff can be relied upon since they still are the best fit for the data.
 	- Detection using
 		1. Durbin-Watson test - statsmodels.stats.stattools.durbin_watson
+			While d can assume values between 0 and 4, values around 2 indicate no autocorrelation. As a rule of thumb values of 1.5 < d < 2.5 show that there is no auto-correlation in the data. However, the Durbin-Watson test only analyses linear autocorrelation and only between direct neighbors, which are first order effects.
 		2. Breusch-Godfrey test - statsmodels.stats.diagnostic.acorr_breusch_godfrey
 			(Both these tests give a p-vale that can be use to detect if AUTOCORRELATION exists or not.)
 		3. Wald–Wolfowitz runs test - statsmodels.sandbox.stats.runs
@@ -354,7 +357,7 @@ X 			0.7393	0.2308 		3.20339 0.00136
 
 
 
-4. NORMALITY OF ERRORS : NORMALLY DISTRIBUTED ERRORS
+4. NORMALITY OF ERRORS : NORMALLY DISTRIBUTED ERRORS : MULTIVARIATE NORMALITY
 						Y 	  = B₀ + B₁ 	X₁ 			+ ε
 	Medical Insurance Payout  = B₀ + B₁ (Customer Age) 	+ ε
 
@@ -406,7 +409,13 @@ X 			0.7393	0.2308 		3.20339 0.00136
 
 	- Remedies
     	1. Remove one of variable	
-7. MULTIVARIATE NORMALITY
+
+7. No Noise / outliers
+8. Rescale Inputs
+
+
+"https://www.lexjansen.com/wuss/2018/130_Final_Paper_PDF.pdf"
+"http://www.statsmodels.org/devel/examples/notebooks/generated/regression_diagnostics.html"
 ----------------------------------------------------------------------------------------------------------------------------------------
 ***********************************************************************LR ANALYSIS STEPS*******************************************************************************
 
@@ -475,7 +484,8 @@ Calculate P-Value for Linear Regression
 -------------------------------------------------------------------------------------------------------------------
 LEARNING CURVE ANALYSIS FOR REGRESSION AND CLASSIFICATION - "https://github.com/Gurubux/StatQuest/tree/master/LearningCurve"
 -------------------------------------------------------------------------------------------------------------------
-
+Learning Curves
+	plot_learning_curve(estimator, title, X, y, ylim=(0.7, 1.01), cv=cv, n_jobs=4)
 
 
 

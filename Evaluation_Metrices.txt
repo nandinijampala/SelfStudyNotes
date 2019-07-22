@@ -152,17 +152,29 @@ In "classification" problems, we use two types of algorithms (dependent on the k
 In "regression" problems, we do not have such inconsistencies in output. The output is always continuous in nature and requires no further treatment.
 
 
-
+ 
 
 SENSITIVITY-SPECIFICITY-PRECISION-ACCURACY CONFUSION MATRIX
  # https://github.com/Gurubux/ML-Analysis-Steps/tree/master/Confusion-Matrix_Sensitivity-Recall_Specificity_Precision_Accuracy
+ 	from sklearn.metrics import confusion_matrix
+ 	cm = confusion_matrix(y_test, model, labels=[0, 1])
+
+
 
 AREA UNDER THE RECEIVER OPERATING CHARACTERISTIC CURVE ( AUC ROC  )
 "https://github.com/Gurubux/ML-Analysis-Steps/tree/master/ROC_AUC"
-
-
-
-
+	from sklearn.metrics import roc_curve,auc,roc_auc_score
+	fpr, tpr, _ = roc_curve(truth,pred)
+	roc_auc 	= auc(fpr, tpr)
+	auc 		= roc_auc_score(y_test, probs)
+	plot_roc_curve(fpr, tpr)
+	
+	from sklearn.metrics import precision_recall_curve,auc,average_precision_score,f1_score
+	precision, recall, thresholds = precision_recall_curve(y_test, probs)
+	auc = auc(recall, precision)
+	ap = average_precision_score(y_test, pred_test) 
+	f1 = f1_score(y_test, pred_test)
+	plot_precision_recall_curve(recall,precision)
 
 
 

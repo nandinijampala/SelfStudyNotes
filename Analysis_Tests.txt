@@ -1,4 +1,5 @@
 Analysis Tests
+"https://machinelearningmastery.com/statistical-hypothesis-tests-in-python-cheat-sheet/"
 -------------------------------------------------------------------------------------------------------------------
 LEARNING CURVE ANALYSIS FOR REGRESSION AND CLASSIFICATION
 -------------------------------------------------------------------------------------------------------------------
@@ -19,6 +20,26 @@ BREUSH-PAGAN TEST:
 HET_GOLDFELDQUANDT
 T-Test
 ANOVA
+
+
+
+
+-------------------------------------------------------------------------------------------------------------------
+CLASSIFICATION - https://github.com/Gurubux/SelfStudyNotes/tree/master/Logistic_Regression
+-------------------------------------------------------------------------------------------------------------------
+
+Multicollinearity
+ pearsonr(X1, X2)
+ spearmanr(X1, X2) 
+ chi2_contingency
+ Variance_inflation_factor
+
+Chisquare()
+
+Regplot() : Linearity Of Ivs & Log Odds
+
+Boxplot() : outliers 
+"https://pythonfordatascience.org/logistic-regression-python/"
 
 
 -------------------------------------------------------------

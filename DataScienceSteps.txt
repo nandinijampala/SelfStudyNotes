@@ -355,7 +355,7 @@ from sklearn.metrics import average_precision_score
 from sklearn.metrics import auc
 plotAUC()
 plot_roc_curve()
-
+plot_precision_recall_curve(recall,precision)
 
 from sklearn.model_selection import cross_val_score # Cross-Validation
 cross_val_score(RandomForestClassifier(n_estimators=10)/LogisticRegression()/svm.SVC(), X, y, scoring='accuracy', cv = 10) # [0.67532468 0.76623377 0.67532468 0.66233766 0.79220779 0.74025974 0.76623377 0.77922078 0.72368421 0.77631579]
@@ -485,9 +485,10 @@ plot_confusion_matrix2()
 	plt.text(x=0.9, y=33.5, s="Max")
 	plt.text(x=0.7, y=19.5, s="IQR", rotation=90, size=25)
 
-8.8 #ROC AUC Curve
+8.8 #ROC AUC Curve PRECISION RECALL CURVE
 plotAUC()
 plot_roc_curve()
+plot_precision_recall_curve(recall,precision)
 
 8.9 #Draw Confidence level for Normal Curve, Z-Score -  CDF PDF PPF
 draw_z_score(x, x<z0, 0, 1, 'z<-0.75')

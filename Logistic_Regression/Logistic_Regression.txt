@@ -1,6 +1,12 @@
+LOGISTIC REGRESSION
+https://github.com/Gurubux/SelfStudyNotes/blob/master/Logistic_Regression/Logistic_Regression.ipynb
+https://github.com/Gurubux/SelfStudyNotes/blob/master/Logistic_Regression/Logistic_Regression_Scratch.ipynb
+---------------------------------------------------------------------------------
 Supervised Machine Learning: Classification
 https://towardsdatascience.com/supervised-machine-learning-classification-5e685fe18a6d
 ---------------------------------------------------------------------------------
+SELF NOTES
+
 X = X1, x2,....
 y = [0,1,1,0,0...] 
 y_pred = h(θᵀx)
@@ -10,7 +16,7 @@ y_pred = h(θᵀx)
 
 y_pred = h(θᵀx) =  1 / 1 + e−ᶻ
 
-TO FIND θ?
+\TO FIND θ?
 1. Error 		= (-y * np.log(y_pred)) - ((1-y)*np.log(1-y_pred))
 
 2. Cost_Funtion = 1/m * sum(error)
@@ -26,11 +32,11 @@ TO FIND θ?
 		
 	Return ( θ , cost_hitory)
 
-Prediction = 		 θᵀx  >  0  = 1
+\Prediction = 		 θᵀx  >  0  = 1
 		OR 
 		   = sigmoid(θᵀx) > 0.5 = 1
 
-Decision boundary :
+\Decision boundary :
 		θᵀx = θ₀ + θ₁ x1 + θ₂ x2 + ...
 		  0 = θ₀ + θ₁ x1 + θ₂ x2 + ...
 		 x2 = (θ₀ + θ₁ x1 + ...) / θ₂
@@ -84,9 +90,240 @@ INTRO TO LOGISTIC REGRESSION
 					ŷ    = 		P(y = 1|X)
 				P(y=0|X) = 1 -  P(y = 1|X)
 
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+****************************************************ASSUMPTIONS LOGISTIC REGRESSION****************************************************
+
+L M E A N H
+  M        
+1. ASSUMPTION OF APPROPRIATE OUTCOME STRUCTURE 
+	To begin, one of the main assumptions of logistic regression is the appropriate structure of the outcome variable. Binary logistic regression requires the dependent variable to be binary and ordinal logistic regression requires the dependent variable to be ordinal.
+
+2. ASSUMPTION OF OBSERVATION INDEPENDENCE 
+	Logistic regression requires the observations to be independent of each other. In other words, the observations should not come from repeated measurements or matched data. The observations should be independent. No repeated measurements.
+
+3. ASSUMPTION OF THE ABSENCE OF MULTICOLLINEARITY ✔
+	Logistic regression requires there to be little or no multicollinearity among the independent variables. This means that the independent variables should not be too highly correlated with each other.
+		pearsonr(X1, X2)
+ 		spearmanr(X1, X2) 
+ 		chi2_contingency()
+ 		Variance_inflation_factor()
+
+4. ASSUMPTION OF LINEARITY OF INDEPENDENT VARIABLES AND LOG ODDS ✔
+	Logistic regression assumes linearity of independent variables and log odds. Although this analysis does not require the dependent and independent variables to be related linearly, it requires that the independent variables are linearly related to the log odds.
+		
+5. ASSUMPTION OF A LARGE SAMPLE SIZE 
+	Finally, logistic regression typically requires a large sample size. A general guideline is that you need at minimum of 10 cases with the least frequent outcome for each independent variable in your model. For example, if you have 5 independent variables and the expected probability of your least frequent outcome is .10, then you would need a minimum sample size of 500 (10*5 / .10).
+
+6. No Noise / outliers ✔
+7. Rescale Inputs
+8. Can Fail to Converge
 
 
-LOGISTIC VS LINEAR REGRESSION
+
+
+
+
+
+
+
+
+"https://www.lexjansen.com/wuss/2018/130_Final_Paper_PDF.pdf"
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+****************************************************ANALYTICS TESTS****************************************************
+
+pandas.crosstab
+"https://towardsdatascience.com/doing-eda-on-a-classification-project-pandas-crosstab-will-change-your-life-c61c1cb2c20b"
+
+3. ASSUMPTION OF THE ABSENCE OF MULTICOLLINEARITY
+	pearsonr(X1, X2)
+		pearsonr(data['Exam 1'], data['Exam 2'])
+		>>> (-0.023664586253294567, 0.8152152827846564)
+
+	spearmanr(X1, X2) 
+		spearmanr(data['Exam 1'], data['Exam 2'])
+		>>> SpearmanrResult(correlation=-0.0372997299729973, pvalue=0.7125481177278083)
+
+	chi2_contingency()
+		from scipy.stats import chi2_contingency
+		table = pd.crosstab(data['Exam 1'], data['Exam 2'])
+		chi2, p, dof, expected = chi2_contingency(table.values)
+		print('Chi-square Statistic %0.3f p_value %0.3f' % (chi2, p))
+		#>>>Chi-square Statistic 9900.000 p_value 0.239
+
+	Variance_inflation_factor()
+		vif = pd.DataFrame()
+		vif["VIF Factor"] = [variance_inflation_factor(data.iloc[:,1:].values, i) for i in range(data.iloc[:,1:].shape[1])]
+		vif["features"] = data.iloc[:,1:].columns
+			VIF Factor	features
+			0	7.676457	Exam 1
+			1	7.151108	Exam 2
+			2	3.762641	Admitted
+
+4. Assumption Of Continuous Ivs Being Linearly Related To The Log Odds
+	Logistic regression DOES NOT require the continuous IV(s) to be linearly related to the DV. 
+	BUT 
+	It DOES require the continuous IV(s) be linearly related to the "LOG ODDS" of the IV though. 
+	==> Look for an S-shaped curve
+		sns.regplot(x= 'Exam 1', y= 'Admitted', data= data, logistic= True).set_title("Exam 1 Log Odds Linear Plot")
+		sns.regplot(x= 'Exam 2', y= 'Admitted', data= data, logistic= True).set_title("Exam 2 Log Odds Linear Plot")
+
+6. No Noise / outliers
+		sns.boxplot(x= 'Exam 1', data= data, orient= 'v').set_title("Exam 1 Box Plot")
+		sns.boxplot(x= 'Exam 2', data= data, orient= 'v').set_title("Exam 2 Box Plot")
+		
+------------------------------------------------------------------------------------------------------------------------------------------------------
+****************************************************EVALUATION METRICS LOGISTIC REGRESSION****************************************************
+1.
+from sklearn.metrics import accuracy_score
+accuracy_score(pred_test,y_test)
+OR
+LR.score(X_test,y_test)
+
+2. 
+from sklearn.metrics import jaccard_score,confusion_matrix,classification_report,log_loss
+jaccard_score(y_test, pred_test) #0.8064516129032258
+confusion_matrix(y_test, pred_test) 
+>>> 	[[ 9  5]
+ 		 [ 1 25]]
+classification_report(y_test, pred_test)
+>>>
+	              precision    recall  f1-score   support
+	
+	           0       0.90      0.64      0.75        14
+	           1       0.83      0.96      0.89        26
+	
+	    accuracy                           0.85        40
+	   macro avg       0.87      0.80      0.82        40
+	weighted avg       0.86      0.85      0.84        40
+
+log_loss(y_test, pred_test) # 5.180916408915378
+
+3.
+CONFUSION MATRIX
+ "https://github.com/Gurubux/ML-Analysis-Steps/tree/master/Confusion-Matrix_Sensitivity-Recall_Specificity_Precision_Accuracy"
+ 	from sklearn.metrics import confusion_matrix
+ 	cm = confusion_matrix(y_test, y_pred, labels=[0, 1])
+ 	tn, fp, fn, tp = confusion_matrix(y_true, y_pred).ravel()
+ 	SENSITIVITY-RECALL  = tp / t = tp / (tp + fn)
+	SPECIFICITY         = tn / n = tn / (tn + fp)
+	PRECISION           = tp / p = tp / (tp + fp)
+	ACCURACY            = tp + tn / (Total)
+
+4.	
+CROSS-VALIDATION
+"https://github.com/Gurubux/ML-Analysis-Steps/tree/master/Cross-Validation"
+
+5.
+AREA UNDER THE RECEIVER OPERATING CHARACTERISTIC CURVE ( roc_curve , AUC , roc_auc_score )
+"https://github.com/Gurubux/ML-Analysis-Steps/tree/master/ROC_AUC"
+
+	from sklearn.metrics import roc_curve,auc,roc_auc_score
+	
+	# calculate roc_curve(y-true,y_score(probs)) : fpr, tpr
+	fpr, tpr, _ = roc_curve(y_test, probs)
+	
+	# calculate AUC 
+	auc = auc(fpr, tpr)
+	
+	# calculate roc_auc_score(y_true,y_score(prob))
+	roc_auc_score = roc_auc_score(y_test, probs)
+
+	plot_roc_curve(fpr, tpr)
+6.
+PRECISION-RECALL CURVE -  (precision_recall_curve, AUC, average_precision_score, f1_score)
+	from sklearn.metrics import precision_recall_curve,f1_score,auc,average_precision_score
+	
+	# calculate precision-recall curve(y-true,y_score(probs))
+	precision, recall, thresholds = precision_recall_curve(y_test, probs)
+	
+	# calculate precision-recall AUC
+	auc = auc(recall, precision)
+
+	# calculate average precision score (y_true,y_score(prob)) = Σ(Rₙ - Rₙ₋₁)/Pₙ 
+	# where Pₙ and Rₙ are the precision and recall at the nᵗʰ threshold.
+	ap = average_precision_score(y_test, pred_test) 
+	
+	# calculate F1 score - F1 = 2 * (precision * recall) / (precision + recall)
+	f1 = f1_score(y_test, pred_test)
+	
+	plot_precision_recall_curve(recall,precision)
+
+7. Akaike information criterion (AIC), the Bayes Information criterion (BIC)
+	AIC
+		[Number of variables*2] - [2*- Log Likelihood]
+			"2*- Log Likelihood" is deviance of LR and its similar to residual sum of squares(RSS) of a linear regression. Ordinary least squares minimizes RSS and LR minimizes deviance.
+	BIC
+		[No of variable*log(No of obs)] - [2*-Log Likelihood]
+
+
+
+
+Binary classification tests.
+Conversion rates.
+Cumulative gain.
+Lift chart.
+"https://www.neuraldesigner.com/blog/methods-binary-classification"
+
+
+"https://www.linkedin.com/pulse/logistic-regression-algorithm-step-amit-kumar/"
+\Beta / Coefficient of Independent variable:
+covariance(Independent ,Dependent ) / variance(Independent )
+
+\Correlation between Independent and Dependent variable:
+covariance(Independent variable,Dependent variable) / [variance(Independent variable)*variance(Dependent variable)]
+
+
+
+\Area Under Curve /C Statistic :
+Percent Concordant + 0.5 * Percent Tied
+
+A pair is concordant when event equal to one has a higher predicted probability than event equal to zero. And discordant is otherwise
+The ROC curve is a graphical plot that illustrates the performance of any binary classifier system as its discrimination threshold is varied
+
+\Gini/Somer’s D :
+2*Area Under Curve - 1
+
+OR
+
+(Concordant - Discordant) / Total pairs
+
+Divergence:
+[(mean when event equal to one – mean when event equal to zero)^2] / [0.5(variance when event equal to one + variance when event equal to zero)]
+
+\Variance Inflation Factor (VIF):
+VIF is used to identify the multicollinearity in the model while linear regression is used to calculate the VIF. Each independent variable will regress with rest of independent variables and calculation is
+TSS = SUM[Dependent variable - mean(Dependent variable)]^2
+
+RSS = SUM[Dependent variable - predicted(Dependent variable)]^2
+
+R Squared = 1.0 - (RSS/TSS)
+
+VIF = 1.0 / (1.0 - R Squared)
+
+\Standard Error of Coefficient:
+The standard error of the coefficient estimates the variability that would be obtained if samples are taken from the same population again and again. The calculation assumes that the sample size and the coefficients to estimate would remain same if the sample is taken repeatedly. Use standard error of the coefficient to measure the precision of the estimate of the coefficient. The smaller the standard error, the more precise the estimate.
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+****************************************************VISUALIZATION****************************************************
+Confusion Matrix
+	plot_confusion_matrix2(y_true,predictions_, normalize=True)
+	plot_confusion_matrix(y_test,y_pred, classes=np.asarray(["0", "1", "2","3"]), normalize=True)
+
+Learning Curves
+	plot_learning_curve(estimator, title, X, y, ylim=(0.7, 1.01), cv=cv, n_jobs=4)
+
+Correlation Coefficient
+	plot_Correlation_Coefficient_1(corr)
+	plot_Correlation_Coefficient_2(corr)
+
+
+AUC ROC PRECISION RECALL
+	plot_roc_curve(fpr, tpr)
+	plot_precision_recall_curve(recall,precision)
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+****************************************************LOGISTIC VS LINEAR REGRESSION****************************************************
 Steps:
 "https://raw.githubusercontent.com/Gurubux/CognitiveClass-ML/master/Course_MachineLearningWithPython/4-Classification/LogR_steps.PNG"
 
@@ -160,6 +397,9 @@ LogisticRegression(C=0.1, class_weight=None, dual=False, fit_intercept=True,
    micro avg       0.72      0.72      0.73        40
    macro avg       0.85      0.63      0.62        40
 weighted avg       0.81      0.72      0.67        40
+
+
+
 
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -307,24 +547,9 @@ repeat until convergence:
 					  λ		    1   m 							
 		θⱼ:=  θⱼ(1- α---) -  α ---  ∑	( hᶱ(xᶦ) - yᶦ ) (xⱼᶦ) 
 					  m		 	m  ᶦ⁼¹ 						
-
-
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
-****************************************************EVALUATION METRICS LOGISTIC REGRESSION****************************************************
-SENSITIVITY SPECIFICITY PRECISION ACCURACY CONFUSION MATRIX - 
-"https://github.com/Gurubux/ML-Analysis-Steps/tree/master/Confusion-Matrix_Sensitivity-Recall_Specificity_Precision_Accuracy"
-
-CROSS-VALIDATION
-"https://github.com/Gurubux/ML-Analysis-Steps/tree/master/Cross-Validation"
-
-AREA UNDER THE RECEIVER OPERATING CHARACTERISTIC CURVE ( AUC ROC  )
-"https://github.com/Gurubux/ML-Analysis-Steps/tree/master/ROC_AUC"
-
-
-
-
-
-
+****************************************************ANALYTICS VIDHYA Q/A****************************************************************************
+https://www.analyticsvidhya.com/blog/2017/08/skilltest-logistic-regression/
 
 
 
@@ -380,4 +605,5 @@ https://www.johnwittenauer.net/machine-learning-exercises-in-python-part-4/
 https://math.stackexchange.com/questions/78575/derivative-of-sigmoid-function-sigma-x-frac11e-x
 https://ml-cheatsheet.readthedocs.io/en/latest/logistic_regression.html#gradient-descent
 https://christophm.github.io/interpretable-ml-book/logistic.html
+https://towardsdatascience.com/real-world-implementation-of-logistic-regression-5136cefb8125
 ****************************************************CODE****************************************************************************
