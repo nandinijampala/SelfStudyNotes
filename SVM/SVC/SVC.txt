@@ -1,5 +1,270 @@
 ------------------------------------------------------------------------------------------------------------------------------------------------------
-****************************************************EVALUATION METRICS SVC****************************************************
+****************************************************SVC****************************************************
+"https://scikit-learn.org/stable/modules/svm.html"
+
+SVC, NuSVC and LinearSVC are classes capable of performing multi-class classification on a dataset.
+SVC and NuSVC are similar methods, but accept slightly different sets of parameters and have different mathematical formulations (see section Mathematical formulation). On the other hand, LinearSVC is another implementation of Support Vector Classification for the case of a linear kernel. Note that LinearSVC does not accept keyword kernel, as this is assumed to be linear. It also lacks some of the members of SVC and NuSVC, like support_.
+
+As other classifiers, SVC, NuSVC and LinearSVC take as input two arrays: an array X of size [n_samples, n_features] holding the training samples, and an array y of class labels (strings or integers), size [n_samples]:
+
+from sklearn import svm
+X = [[0, 0], [1, 1]]
+y = [0, 1]
+clf = svm.SVC(gamma='scale')
+clf.fit(X, y)  l
+>>> 
+SVC(C=1.0, cache_size=200, class_weight=None, coef0=0.0,
+    decision_function_shape='ovr', degree=3, gamma='scale', kernel='rbf',
+    max_iter=-1, probability=False, random_state=None, shrinking=True,
+    tol=0.001, verbose=False)
+After being fitted, the model can then be used to predict new values:
+
+clf.predict([[2., 2.]])
+>>>
+	array([1])
+-----------------------------------------------------------------------------------------------------------------------------
+
+\4 Types oF SVM classifiers
+1. svm.LinearSVC([penalty, loss, dual, tol, C, …])	
+	- Linear Support Vector Classification.
+	- Similar to SVC with parameter kernel=’linear’, but implemented in terms of "liblinear" rather than libsvm, so it has more flexibility in the choice of penalties and loss functions and should scale better to large numbers of samples.
+	- Multiclass support is handled according to a "one-vs-the-rest" scheme.
+	 "LIBLINEAR: A library for large linear classification".
+
+2. svm.NuSVC([nu, kernel, degree, gamma, …])	
+	- Nu-Support Vector Classification. - Similar to SVC but uses a parameter to control the number of support vectors.
+	- The implementation is based on "libsvm".
+
+3. svm.SVC([C, kernel, degree, gamma, coef0, …])	C-Support Vector Classification.
+	- C-Support Vector Classification.
+	- The implementation is based on "libsvm".
+	- The multiclass support is handled according to a "one-vs-one" scheme.
+
+4. sklearn.linear_model.SGDClassifier
+	SGDClassifier can optimize the same cost function as LinearSVC by adjusting the penalty and loss parameters. In addition it requires less memory, allows incremental (online) learning, and implements various loss functions and regularization regimes.
+
+
+
+SVC and NuSVC are similar except C & nu as parameters respectively.
+LinearSVC is SVC with kernel ='linear'
+-----------------------------------------------------------------------------------------------------------------------------
+
+\ Multi-class classification
+https://scikit-learn.org/stable/modules/svm.html#multi-class-classification
+"https://scikit-learn.org/stable/auto_examples/plot_multilabel.html#sphx-glr-auto-examples-plot-multilabel-py"
+- decision_function_shape : ‘ovo’, ‘ovr’, default=’ovr’
+only in NuSVC and SVC
+Whether to return a one-vs-rest (‘ovr’) decision function of shape (n_samples, n_classes) as all other classifiers, 
+	or 
+the original one-vs-one (‘ovo’) decision function of libsvm which has shape (n_samples, n_classes * (n_classes - 1) / 2).
+
+
+
+------OneVsRestClassifier----------
+decision_function_shape = 'ovo' and 'ovr'
+from sklearn.datasets import load_iris
+from sklearn.multiclass import OneVsRestClassifier
+from sklearn.svm import SVC
+
+data = load_iris()
+
+X, y = data.data, data.target
+estim1 = OneVsRestClassifier(SVC(kernel='linear', decision_function_shape='ovo'))
+estim1.fit(X,y)
+
+estim2 = OneVsRestClassifier(SVC(kernel='linear', decision_function_shape='ovr'))
+estim2.fit(X,y)
+
+print(estim1.coef_ == estim2.coef_)
+array([[ True,  True,  True,  True],
+       [ True,  True,  True,  True],
+       [ True,  True,  True,  True]], dtype=bool)
+------OneVsRestClassifier----------
+
+
+ALL ABOUT noef_, intercept_ and dual_coef_ in" one-vs-one" and "one-vs-rest" classifiers
+	"https://scikit-learn.org/stable/modules/svm.html#multi-class-classification"
+
+
+
+SVMs decision function depends on some subset of the training data, called the support vectors. Some properties of these support vectors can be found in members support_vectors_, support_ and n_support:
+
+# get support vectors
+clf.support_vectors_
+>>> array([[0., 0.],
+       [1., 1.]])
+
+# get indices of support vectors
+clf.support_ 	
+>>> array([0, 1]...)
+
+# get number of support vectors for each class
+clf.n_support_ 
+>>>array([1, 1]...)
+
+
+"nuSVC and SVC - one-vs-one"
+decision_function(self, X)	Evaluates the decision function for the samples in X.
+Evaluates the decision function for the samples in X.
+
+Parameters:	
+	X : array-like, shape (n_samples, n_features)
+Returns:	
+	X : array-like, shape (n_samples, n_classes * (n_classes-1) / 2)
+Returns the decision function of the sample for each class in the model. If decision_function_shape=’ovr’, the shape is (n_samples, n_classes).
+
+Notes
+If decision_function_shape=’ovo’, the function values are proportional to the distance of the samples X to the separating hyperplane. If the exact distances are required, divide the function values by the norm of the weight vector (coef_). See also this question for further details. If decision_function_shape=’ovr’, the decision function is a monotonic transformation of ovo decision function
+
+
+"LinearSVC - one-vs-rest"
+decision_function(self, X)[source]
+Predict confidence scores for samples.
+The confidence score for a sample is the signed distance of that sample to the hyperplane.
+
+Parameters:	
+	X : array_like or sparse matrix, shape (n_samples, n_features) Samples.
+
+Returns:	
+	array, shape=(n_samples,) if n_classes == 2 else (n_samples, n_classes)
+	Confidence scores per (sample, class) combination. In the binary case, confidence score for self.classes_[1] where >0 means this class would be predicted.
+_________________________________________________________________________________________________
+			|		one-vs-one									|			one-vs-rest 		|
+			|	nuSVC	|	SVC									|			LinearSVC			|
+-------------------------------------------------------------------------------------------------				
+coef_ 		|	[n_class * (n_class - 1) / 2, n_features]		|	[n_class, n_features]		|		
+			|													|								|
+			|													|								|
+intercept_ 	|	[n_class * (n_class - 1) / 2]					|		[n_class]				|
+			|													|								|
+			|													|								|
+dual_coef_ 	|	[n_class-1, n_SV]								|								|
+			|													|								|
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+****************************************************ASSUMPTIONS METRICS SVC****************************************************
+1. IID
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+****************************************************HYPERPARAMETERS /ATTRIBUTES/ METHODS SVC****************************************************
+\HYPERPARAMETERS
+3 - LinearSVC,NuSVC, SVC
+	tol 
+	class_weight : {dict, ‘balanced’}, optional
+	decision_function_shape : ['ovo','ovr']
+
+
+2- NuSVC, SVC
+	kernel  				: ['linear', 'poly', 'rbf', 'sigmoid', 'precomputed' or a callable]
+	degree 					: default=3 only for kernel = poly
+	gamma 					: ['auto','scale'] default=’auto’ -  Kernel coefficient For ‘rbf’, ‘poly’ and ‘sigmoid’ - Current default is ‘auto’ which uses 1 / 							n_features, if gamma=‘scale‘ is passed then it uses 1 / (n_features * X.var()) as value of gamma.
+	coef0 					: default=0.0
+	probability 			: ['True','False'] default=False - Whether to enable probability estimates.
+	decision_function_shape : ['ovo','ovr']
+
+
+2- LinearSVC, SVC
+	C : default=1.0
+
+
+
+1- LinearSVC
+	penalty 	: string, ‘l1’ or ‘l2’ (default=’l2’)
+	loss 		: string, ‘hinge’ or ‘squared_hinge’ (default=’squared_hinge’)
+	dual 		: bool, (default=True)
+	multi_class : string, ‘ovr’ or ‘crammer_singer’ (default=’ovr’)
+
+
+1-SVC
+	
+
+1- NuSVC
+	nu : float, optional (default=0.5)
+	An upper bound on the fraction of training errors and a lower bound of the fraction of support vectors. Should be in the interval (0, 1].
+
+
+\ATTRIBUTES
+
+coef_
+intercept_ 
+
+
+ONLY IN NuSVC and SVC
+# get support vectors
+clf.support_vectors_
+>>> array([[0., 0.],
+       [1., 1.]])
+
+# get indices of support vectors
+clf.support_ 	
+>>> array([0, 1]...)
+
+# get number of support vectors for each class
+clf.n_support_ 
+>>>array([1, 1]...)
+
+dual_coef_ : array, shape = [n_class-1, n_SV]
+	Coefficients of the support vector in the decision function. For multiclass, coefficient for all 1-vs-1 classifiers. The layout of the coefficients in the multiclass case is somewhat non-trivial. See the section about multi-class classification in the SVM section of the User Guide for details.
+	"https://scikit-learn.org/stable/modules/svm.html#multi-class-classification"
+
+ONLY in SVC
+fit_status_ : int
+	0 if correctly fitted, 1 otherwise (will raise warning)
+
+probA_ : array, shape = [n_class * (n_class-1) / 2]
+probB_ : array, shape = [n_class * (n_class-1) / 2]
+	f probability=True, the parameters learned in Platt scaling to produce probability estimates from decision values. If probability=False, an empty array. Platt scaling uses the logistic function 1 / (1 + exp(decision_value * probA_ + probB_)) where probA_ and probB_ are learned from the dataset [R20c70293ef72-2]. For more information on the multiclass case and training procedure see section 8 of [R20c70293ef72-1].
+
+
+\METHODS
+
+decision_function(self, X)	Evaluates the decision function for the samples in X.
+Evaluates the decision function for the samples in X.
+
+Parameters:	
+	X : array-like, shape (n_samples, n_features)
+Returns:	
+	X : array-like, shape (n_samples, n_classes * (n_classes-1) / 2)
+Returns the decision function of the sample for each class in the model. If decision_function_shape=’ovr’, the shape is (n_samples, n_classes).
+
+Notes
+If decision_function_shape=’ovo’, the function values are proportional to the distance of the samples X to the separating hyperplane. If the exact distances are required, divide the function values by the norm of the weight vector (coef_). See also this question for further details. If decision_function_shape=’ovr’, the decision function is a monotonic transformation of ovo decision function
+
+
+
+ONLY in SVC and nuSVC
+	predict_proba(X)
+	predict_log_proba(X)
+
+
+
+Only in LinearSVC
+	densify(self)	Convert coefficient matrix to dense array format.
+	sparsify(self)	Convert coefficient matrix to sparse format.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+****************************************************KERNELS METRICS SVC****************************************************
+https://www.kdnuggets.com/2016/06/select-support-vector-machine-kernels.html
+
+'linear', 'poly', 'rbf', 'sigmoid', 'precomputed' or a callable
+The kernel function can be any of the following:
+
+linear 		: <x,x`>
+
+polynomial	: (γ<x,x`> + r)ᵈ 
+	d is specified by keyword "degree", r by "coef0".
+
+
+rbf 		: exp( - γ ||x - x`||² )  
+	γ is specified by keyword "gamma", must be greater than 0.
+	EXAMPLE : "https://scikit-learn.org/stable/auto_examples/svm/plot_rbf_parameters.html#sphx-glr-auto-examples-svm-plot-rbf-parameters-py"
+
+
+
+sigmoid ( tanh((γ<x,x`> + r)) )
+	r is specified by coef0.
 
 
 
@@ -10,33 +275,185 @@
 
 
 
-------------------------------------------------------------------------------------------------------------------------------------------------------
-****************************************************EVALUATION METRICS SVC****************************************************
-
-
-
-
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------
-****************************************************EVALUATION METRICS SVC****************************************************
+****************************************************VISUALIZATION METRICS SVC****************************************************
+
+ax.contour
+BASIC SVM - "https://scikit-learn.org/stable/auto_examples/svm/plot_separating_hyperplane.html#sphx-glr-auto-examples-svm-plot-separating-hyperplane-py"
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+****************************************************ANALYTICS VIDHYA SVC****************************************************
+
+https://www.analyticsvidhya.com/blog/2017/10/svm-skilltest/
+"https://www.analyticsvidhya.com/blog/2017/09/understaing-support-vector-machine-example-code/"
+
+@Generalisation error in statistics is generally the out-of-sample error which is the measure of how accurately a model can predict values for previously unseen data.
+	gamma: Kernel coefficient for ‘rbf’, ‘poly’ and ‘sigmoid’. Higher the value of gamma, will try to exact fit the as per training data set i.e. generalization error and cause over-fitting problem.
+
+@ When the C parameter is set to infinite, which of the following holds true?
+	- The optimal hyperplane if exists, will be the one that completely separates the data
+	- At such a high level of misclassification penalty, soft margin will not hold existence as there will be no room for error.	
+@Hard margin
+The SVM allows very low error in classification
+
+@Time complexity for training an SVM is O(n2). According to this fact, what sizes of datasets are NOT BEST SUITED FOR SVM’S
+Large datasets
+
+@The effectiveness of an SVM depends upon:
+	- Selection of Kernel
+	- Kernel Parameters
+	- Soft Margin Parameter C
+The SVM effectiveness depends upon how you choose the basic 3 requirements mentioned above in such a way that it maximises your efficiency, reduces error and overfitting.
+
+@Support vectors are the data points that lie closest to the decision surface.
+
+@The SVMs are less effective when:
+	The data is noisy and contains overlapping points - Outliers
+
+@Suppose you are using RBF kernel in SVM with high Gamma value. What does this signify
+\HIGH GAMMA - SMALLER MARGIN - VERY CLOSE POINTS CONSIDERED - SHAPE IS MAINTAINED - OVER-FITTING
+	The model would consider only the points close to the hyperplane for modeling
+	The gamma parameter in SVM tuning signifies the influence of points either near or far away from the hyperplane.
+	For a low gamma, the model will be too constrained and include all points of the training dataset, without really capturing the shape.
+	For a higher gamma, the model will capture the shape of the dataset well.
+
+@The cost parameter in the SVM means:
+	The cost parameter decides how much an SVM should be allowed to “bend” With the data. For a low cost, you aim For a smooth decision surface and for a higher cost, you aim to classify more points correctly. It is also simply referred to as the "cost of misclassification".
+
+
+@Suppose you are building a SVM model on data X. The data X can be error prone which means that you should not trust any specific data point too much. Now think that you want to build a SVM model which has quadratic kernel function of polynomial degree 2 that uses Slack variable C as one of it’s hyper parameter. Based upon that give the answer for following question.
+	-What would happen when you use very large value of C(C->infinity)?
+	-Note: For small C was also classifying all data points correctly
+	
+	"For large values of C, the penalty for misclassifying points is very high", so the decision boundary will perfectly separate the data if possible.
+
+@What would happen when you use very small C (C~0)?
+	\Misclassification would happen - The classifier can maximize the margin between most of the points, while misclassifying a few points, because the penalty is so low.
+
+
+@ If I am using all features of my dataset and I achieve 100% accuracy on my training set, but ~70% on validation set, what should I look out for?
+	OVER-FITTING - If we’re achieving 100% training accuracy very easily, we need to check to verify if we’re overfitting our data.
+
+
+@Which of the following are real world applications of the SVM?
+	 A) Text and Hypertext Categorization
+	 B) Image Classification
+	 C) Clustering of News Articles
+	"D)" All of the above
+	SVM’s are highly versatile models that can be used for practically all real world problems ranging from regression to clustering and handwriting recognitions.
+
+@Suppose you have trained an SVM with linear decision boundary after training SVM, you correctly infer that your SVM model is under fitting.
+ A) You want to increase your data points
+ B) You want to decrease your data points
+"C)" You will try to calculate more variables
+ D) You will try to reduce the features
+	The best option here would be to create more features for the model.
+
+@Suppose you gave the correct answer in previous question. What do you think that is actually happening?
+	1. We are lowering the bias ✔
+	2. We are lowering the variance
+	3. We are increasing the bias
+	4. We are increasing the variance ✔
+		Better model will lower the bias and increase the variance
+
+18) In above question suppose you want to change one of it’s(SVM) hyperparameter so that effect would be same as previous questions i.e model will not under fit?
+	A) We will increase the parameter C✔
+	B) We will decrease the parameter C
+	C) Changing in C don’t effect
+	D) None of these
+	Solution: A
+		Increasing C parameter would be the right thing to do here, as it will ensure regularized model
+
+@Suppose you have trained an SVM classifer with a Gaussian kernel, and it learned the following decision boundary on the training set: You suspect that the SVM is underftting your dataset. Should you try increasing or decreasing C? Increasing or decreasing σ²?
+		\Increasing C and decreasing σ²
+
+@Normalization before Gaussian kernel
+	Yes feature scaling depends on the kernel and in general it`s a good idea. The kernel is effectively a distance and if different features vary on different scales then this can matter. For the RBF kernel, for instance, we have
+		K(x,x′)=exp(−γ||x−x′||2)
+	So if one dimension takes much larger values than others then it will dominate the kernel values and you`ll lose some signal in other dimensions. This applies to the linear kernel too.
+
+
+@Multi_Class Classification
+	Suppose you are dealing with 4 class classification problem and you want to train a SVM model on the data for that you are using One-vs-all method. Now answer the below questions?
+		20) How many times we need to train our SVM model in such case?
+			- For a 4 class problem, you would have to train the SVM at least 4 times if you are using a one-vs-all method
+		21) Suppose you have same distribution of classes in the data. Now, say for training 1 time in one vs all setting the SVM is taking 10 second. How many seconds would it require to train one-vs-all method end to end?
+			- It would take 10×4 = 40 seconds
+		22) Suppose your problem has changed now. Now, data has only 2 classes. What would you think how many times we need to train SVM in such case?
+			- Training the SVM only one time would give you appropriate results
+
+
+@Polynomial_Linear model
+Suppose you are using SVM with linear kernel of polynomial degree 2, Now think that you have applied this on data and found that it perfectly fit the data that means, Training and testing accuracy is 100%.
+
+	23) Now, think that you increase the complexity(or degree of polynomial of this kernel). What would you think will happen?
+	A) Increasing the complexity will overfit the data
+	B) Increasing the complexity will underfit the data
+	C) Nothing will happen since your model was already 100% accurate
+	D) None of these
+		Solution: A
+		Increasing the complexity of the data would make the algorithm overfit the data.
+
+	24) In the previous question after increasing the complexity you found that training accuracy was still 100%. According to you what is the reason behind that?
+		✔ 1. Since data is fixed and we are fitting more polynomial term or parameters so the algorithm starts memorizing everything in the data	
+		✔ 2. Since data is fixed and SVM doesn’t need to search in big hypothesis space
+
+25) What is/are true about kernel in SVM?
+	✔ 1. Kernel function map low dimensional data to high dimensional space
+	✔ 2. It’s a similarity function		
 
 
 
 
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+****************************************SVM COMPARISION WITH LR,KNN,DT,RF,NB**************************************************************
+https://towardsdatascience.com/comparative-study-on-classic-machine-learning-algorithms-24f9ff6ab222
+https://medium.com/@dannymvarghese/comparative-study-on-classic-machine-learning-algorithms-part-2-5ab58b683ec0
+
+
+The advantages of support vector machines are:
+
+	- Effective in high dimensional spaces.
+	- Still effective in cases where number of dimensions is greater than the number of samples.
+	- Uses a subset of training points in the decision function (called support vectors), so it is also memory efficient.
+	- Versatile: different Kernel functions can be specified for the decision function. Common kernels are provided, but it is also possible to specify custom kernels.
+The disadvantages of support vector machines include:
+
+	- If the number of features is much greater than the number of samples, avoid over-fitting in choosing Kernel functions and regularization term is crucial.
+	- SVMs do not directly provide probability estimates, these are calculated using an expensive five-fold cross-validation (see Scores and probabilities, below).
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 ****************************************************REFERENCES SVC****************************************************
 "https://towardsdatascience.com/support-vector-machine-vs-logistic-regression-94cc2975433f"
 
-m4,n4 = Xval.shape[0],Xval.shape[1]
-pos4,neg4= (yval==1).reshape(m4,1), (yval==0).reshape(m4,1)
+MATH
+"https://www.svm-tutorial.com/2017/02/svms-overview-support-vector-machines/"
 
-plt.figure(figsize=(8,6))
-plt.scatter(Xval[pos4[:,0],0],Xval[pos4[:,0],1],c="r",marker="+",s=50)
-plt.scatter(Xval[neg4[:,0],0],Xval[neg4[:,0],1],c="y",marker="o",s=50)
+"https://www.youtube.com/playlist?list=PLLssT5z_DsK9JDLcT8T62VtzwyW9LNepV"
 
-# plotting the decision boundary
-X_9,X_10 = np.meshgrid(np.linspace(Xval[:,0].min(),Xval[:,1].max(),num=100),np.linspace(Xval[:,1].min(),Xval[:,1].max(),num=100))
-plt.contour(X_9,X_10,classifier4.predict(np.array([X_9.ravel(),X_10.ravel()]).T).reshape(X_9.shape),1,colors="b")
-plt.xlim(-0.6,0.3)
-plt.ylim(-0.7,0.5)
-'linear', 'poly', 'rbf', 'sigmoid', 'precomputed'
+EVERYTHING DETAILED but STILL SIMPLE SVC - WHICH SVM to USE 
+"https://www.csie.ntu.edu.tw/~cjlin/libsvm/"
+"https://www.csie.ntu.edu.tw/~cjlin/papers/guide/guide.pdf"
+
+HOW TO USE SVM in PYTHON
+"https://scikit-learn.org/stable/modules/svm.html#tips-on-practical-use"
+ 
+ “LIBLINEAR: A library for large linear classification.
+
+
+
+Examples
+ "https://scikit-learn.org/stable/auto_examples/svm/plot_weighted_samples.html#sphx-glr-auto-examples-svm-plot-weighted-samples-py"
+ "https://scikit-learn.org/stable/auto_examples/svm/plot_svm_nonlinear.html#sphx-glr-auto-examples-svm-plot-svm-nonlinear-py"
+ "https://scikit-learn.org/stable/auto_examples/svm/plot_iris_svc.html#sphx-glr-auto-examples-svm-plot-iris-svc-py"
+SVM-Anova "https://scikit-learn.org/stable/auto_examples/svm/plot_svm_anova.html#sphx-glr-auto-examples-svm-plot-svm-anova-py"
+"https://scikit-learn.org/stable/auto_examples/svm/plot_separating_hyperplane_unbalanced.html#sphx-glr-auto-examples-svm-plot-separating-hyperplane-unbalanced-py"
+BASIC SVM - "https://scikit-learn.org/stable/auto_examples/svm/plot_separating_hyperplane.html#sphx-glr-auto-examples-svm-plot-separating-hyperplane-py"
+

@@ -1,0 +1,6 @@
+svm.LinearSVR([epsilon, tol, C, loss, …])	Linear Support Vector Regression.
+svm.NuSVR([nu, C, kernel, degree, gamma, …])	Nu Support Vector Regression.
+svm.SVR([kernel, degree, gamma, coef0, tol, …])	Epsilon-Support Vector Regression.
+
+svm.OneClassSVM([kernel, degree, gamma, …])	Unsupervised Outlier Detection.
+svm.l1_min_c(X, y[, loss, fit_intercept, …])	Return the lowest bound for C such that for C in (l1_min_C, infinity) the model is guaranteed not to be empty.
