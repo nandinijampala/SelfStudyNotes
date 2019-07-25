@@ -69,8 +69,10 @@ Log Loss :   		y log(ŷ) + (1-y) log(1- ŷ)
 
 
 
-LAB: KNN
+\LAB: KNN and NearestCentroid
+
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.neighbors.nearest_centroid import NearestCentroid
 
 k = 4
 #Train Model and Predict  
@@ -79,6 +81,14 @@ neigh = KNeighborsClassifier(n_neighbors = k).fit(X_train,y_train)
 	KNeighborsClassifier(algorithm='auto', leaf_size=30, metric='minkowski',
            metric_params=None, n_jobs=None, n_neighbors=4, p=2,
            weights='uniform')
+
+nc = NearestCentroid()
+nc.fit(X_train,y_train)
+>>>
+	NearestCentroid(metric='euclidean', shrink_threshold=None)
+
+
+
 
 yhat = neigh.predict(X_test)
 yhat[0:5]
@@ -107,6 +117,28 @@ for n in range(1,Ks):
 
 mean_acc
 >>> array([0.3  , 0.29 , 0.315, 0.32 , 0.315, 0.31 , 0.335, 0.325, 0.34 ])
+
+metricss = ['cityblock', 'cosine', 'euclidean', 'l1', 'l2', 'manhattan']
+mean_acc_ = np.zeros((len(metricss)))
+std_acc_ = np.zeros((len(metricss)))
+ConfustionMx = [];
+for n in range(len(metricss)):
+    
+    #Train Model and Predict  
+    neigh = NearestCentroid(metric = metricss[n]).fit(X_train,y_train)
+    yhat=neigh.predict(X_test)
+    mean_acc_[n-1] = metrics.accuracy_score(y_test, yhat)
+    std_acc_[n-1]=np.std(yhat==y_test)/np.sqrt(yhat.shape[0])
+
+mean_acc_
+>>> array([0.4 , 0.4 , 0.41, 0.4 , 0.35, 0.41])
+
+
+
+
+
+
+
 
 #Plot model accuracy for Different number of Neighbors
 plt.plot(range(1,Ks),mean_acc,'g')
@@ -145,34 +177,47 @@ plot_confusion_matrix(y_test,y_pred, classes=np.asarray(["0", "1", "2","3"]), no
 
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------
-****************************************************ANALYTICS VIDHYA KNN****************************************************
+****************************************************KNN Parameters/ATrributes/Methods****************************************************
+\KNeighborsClassifier
+1. metric :
+	Metrics intended for real-valued vector spaces:
+	"https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.DistanceMetric.html"
+	identifier		class name			args	distance function
+	------------------------------------------------------------------
+	'euclidean'		EuclideanDistance			sqrt(sum((x - y)^2))
+	'manhattan'		ManhattanDistance			sum(|x - y|)
+	'chebyshev'		ChebyshevDistance			max(|x - y|)
+	'minkowski'		MinkowskiDistance	p		sum(|x - y|^p)^(1/p)
+	'wminkowski'	WMinkowskiDistance	p, w	sum(|w * (x - y)|^p)^(1/p)
+	'seuclidean'	SEuclideanDistance	V		sqrt(sum((x - y)^2 / V))
+	'mahalanobis'	MahalanobisDistance	V or VI	sqrt((x - y)` V^-1 (x - y))
+
+'euclidean','manhattan','chebyshev','minkowski','wminkowski','seuclidean','mahalanobis'
+"https://raw.githubusercontent.com/Gurubux/SelfStudyNotes/master/KNN/distance_formuales.gif"
+2. n_neighbors:default = 5
+3. Weights= ['uniform','distance' ,callable ]
+4.algorithm : {‘auto’, ‘ball_tree’, ‘kd_tree’, ‘brute’}
+
+
+\NearestCentroid:
+5.metric : ['cityblock', 'cosine', 'euclidean', 'l1', 'l2', 'manhattan']
+6. shrink_threshold
 
 
 
 
 
+\RadiusNeighborsClassifier:
+7.radius :default = 1.0
+	Range of parameter space to use by default for radius_neighbors queries.
+	Metric,Weights,algorithm KneighborsClassifier
+
+NearestNeighbors
+All from KneighborsClassifier and RadiusNeighborsClassifier
 ------------------------------------------------------------------------------------------------------------------------------------------------------
-****************************************************ANALYTICS VIDHYA KNN****************************************************
+****************************************************KNN NOTE****************************************************
 
-
-
-
-
-------------------------------------------------------------------------------------------------------------------------------------------------------
-****************************************************ANALYTICS VIDHYA KNN****************************************************
-
-
-
-
-
-
-
-
-
-------------------------------------------------------------------------------------------------------------------------------------------------------
-****************************************************ANALYTICS VIDHYA KNN****************************************************
-
-
+@REGARDING THE NEAREST NEIGHBORS ALGORITHMS IF IT IS FOUND THAT TWO NEIGHBORS NEIGHBOR K+1 AND K, HAVE IDENTICAL DISTANCES BUT DIFFERENT LABELS, THE RESULTS WILL DEPEND ON THE ORDERING OF THE TRAINING DATA.
 
 
 
