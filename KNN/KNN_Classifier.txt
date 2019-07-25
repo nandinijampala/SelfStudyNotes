@@ -214,9 +214,20 @@ plot_confusion_matrix(y_test,y_pred, classes=np.asarray(["0", "1", "2","3"]), no
 
 NearestNeighbors
 All from KneighborsClassifier and RadiusNeighborsClassifier
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+****************************************************KNN ASSUMPTIONS****************************************************
+k-NN performs much better if all of the data have the same scale
+k-NN works well with a small number of input variables (p), but struggles when the number of inputs is very large
+k-NN makes no assumptions about the functional form of the problem being solved
+
+
+
+
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 ****************************************************KNN NOTE****************************************************
-
 @REGARDING THE NEAREST NEIGHBORS ALGORITHMS IF IT IS FOUND THAT TWO NEIGHBORS NEIGHBOR K+1 AND K, HAVE IDENTICAL DISTANCES BUT DIFFERENT LABELS, THE RESULTS WILL DEPEND ON THE ORDERING OF THE TRAINING DATA.
 
 
@@ -232,14 +243,93 @@ https://www.analyticsvidhya.com/blog/2017/09/30-questions-test-k-nearest-neighbo
 
 
 
+@kNN algorithm does more computation on test time rather than train time.
+	The training phase of the algorithm consists only of storing the feature vectors and class labels of the training samples.
+	In the testing phase, a test point is classified by assigning the label which are most frequent among the k training samples nearest to that query point – hence higher computation.
+	Lazy Algorithm
+
+@It can be used in both classification and regression 
+
+@ASSUMPTIONS
+	k-NN performs much better if all of the data have the same scale
+	k-NN works well with a small number of input variables (p), but struggles when the number of inputs is very large
+	k-NN makes no assumptions about the functional form of the problem being solved
+
+@kNN algorithm can be used for IMPUTING MISSING VALUE of both categorical and continuous variables.
+	"https://github.com/Gurubux/SelfStudyNotes/blob/master/KNN/KNN_Regression/KNN_Regressor_Imputing_missing_values.ipynb"
+
+
+@Manhattan and Euclidean Distance is designed for calculating the distance between real valued i.e CONTINUOUS features.
+
+@Hamming  Distance is designed for calculating the distance CATEGORICAL variable.
+
+
+Euclidean - sqrt( (1-2)^2 + (3-3)^2) 	   = sqrt(1^2 + 0^2) = 1
+Manhattan - sqrt( mod((1-2)) + mod((3-3))) = sqrt(1 + 0) = 1
 
 
 
 
 
+@When you increase the k the bias will be increases
+	large K means simple model, simple model always condider as high bias
+
+@When you decrease the k the variance will increases
+	Simple model will be consider as less variance model
 
 
+@Outliers
+	To be more sure of which classifications you make, you can try increasing the value of k.
 
+@In kNN it is very likely to overfit due to the curse of dimensionality. Which of the following option would you consider to handle such problem?
+	In such case you can use either dimensionality reduction algorithm or the feature selection algorithm
+
+@kNN is a memory_based approach is that the classifier immediately adapts as we collect new training data.
+
+@The computational complexity for classifying new samples grows linearly with the number of samples in the training dataset in the wors_case scenario.
+
+
+@In an overfitted model it seems to be performing well on training data, but it is not generalized enough to give the same results on a new data.
+
+@In case of very large value of k, we may include points from other classes into the neighborhood.
+
+@In case of too small value of k the algorithm is very sensitive to noise
+
+A) The classification accuracy is better with larger values of k
+B) The decision boundary is smoother with smaller values of k
+C) The decision boundary is linear
+D) k-NN does not require an explicit training step
+
+Option A: This is not always true. You have to ensure that the value of k is not too high or not too low.
+Option B: This statement is not true. The decision boundary can be a bit jagged
+Option C: Same as option B
+Option D: This statement is true
+
+@You can implement a 2_NN classifier by ensembling 1_NN classifiers
+
+@The boundary becomes smoother with increasing value of K
+
+@We can choose optimal value of k with the help of cross validation
+
+@Euclidean distance treats each feature as equally important
+
+@The value of N is very large, so option A is correct
+What would be the time taken by 1-NN if there are N(Very large) observations in test data?
+	A) N*D
+	B) N*D*2
+	C) (N*D)/2
+	D) None of these
+		Solution: A
+			The value of N is very large, so option A is correct
+
+
+@The training time for any value of k in kNN algorithm is the same.
+What would be the relation between the time taken by 1-NN,2-NN,3-NN.
+	A) 1-NN >2-NN >3-NN
+	B) 1-NN < 2-NN < 3-NN
+	C) 1-NN ~ 2-NN ~ 3-NN
+	D) None of these
+		Solution: C
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 ****************************************************REFERENCES KNN****************************************************
 "https://scikit-learn.org/stable/modules/neighbors.html"
