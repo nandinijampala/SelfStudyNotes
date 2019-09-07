@@ -122,7 +122,7 @@ names2011 = pd.read_csv('names/yob2011.txt',names=['name','sex','number'])
 		5	110			Low
 		#cut()
 
-3.3 REMOVING COLUMNS
+3.3 REMOVING COLUMNS / ADDING COLUMNS
 	empty_cols = [i for i in range(45,72)]
 	dataset = dataset.drop(dataset.columns[empty_cols],axis=1)
 
@@ -134,6 +134,8 @@ names2011 = pd.read_csv('names/yob2011.txt',names=['name','sex','number'])
 	dataset.dropna(axis=1) # Drop any columns with missing values. DEFAULT axis = 0
 	# drop(), dropna()
 
+	df_can['Total'] = df_can.sum(axis=1) # Add column to a dataframe # sum of column values in dataframe
+
 3.4 REMOVING ROWS
 	dataset = dataset.dropna(axis=0) # Drop any rows with missing values. DEFAULT axis = 0
 
@@ -141,7 +143,12 @@ names2011 = pd.read_csv('names/yob2011.txt',names=['name','sex','number'])
 	dataset.dropna(how='all') # drop only the rows from a DataFrame that contain ALL missing values
 
 
-3.5 CONVERTING TYPE OF COLUMN
+3.5 CONVERTING TYPE OF COLUMN VLUES
+	#Check type of column Name
+	all(isinstance(column, str) for column in df_can.columns)
+	#Change type of column name
+	df_can.columns = list(map(str, df_can.columns))
+
 	Final_data["emp_length"] = Final_data["emp_length"].apply(lambda x:int(x))
 	Final_data[“emp_length”] = Final_data[“emp_length”].apply(lambda x:pd.to_numeric(x, downcast=’integer’))
 	missing_df = df[["normalized-losses","stroke","bore","horsepower","peak-rpm"]] #to float64
@@ -158,6 +165,7 @@ names2011 = pd.read_csv('names/yob2011.txt',names=['name','sex','number'])
 
 3.8 SELECTING COLUMNS WITH SPECIFIC DATA TYPES, DTYPES
 	df_numeric = df.select_dtypes(include=[np.float64,np.int64])
+
 ------------------------------------------------------
 4. SPLITTING/MERGING/SAMPLING/BOOTSTRAPPING/SCALING/GROUPING/FILTERING ETC.
 ------------------------------------------------------
@@ -207,7 +215,10 @@ names2011 = pd.read_csv('names/yob2011.txt',names=['name','sex','number'])
 # Subset to the top 5 airlines
 top_five_flights = flights[flights['name'].isin(top_five)]
 #Sort Series
-carrier_flights = carrier_flights.sort_values(ascending=False) #.sort_values(by=[5], ascending=[False]) # 5 is the column index
+carrier_flights = carrier_flights.sort_values(ascending=False) 
+df_can.sort_values(by=[5], ascending=[False]) # 5 is the column index 
+df_can.sort_values(['Total'], ascending=False, axis=0, inplace=True)
+
 #sort dataframe
 df.sort_index(axis=1, ascending=False)
 df.sort_values(by='B', ascending=False)
@@ -412,11 +423,16 @@ def print_results(results):
 ---------------------------------
 8. VISUALIZATION
 ---------------------------------
+some_data.plot(kind='type_plot', ...) is equivalent to some_data.plot.type_plot(...)
+
 8.1 # Histogram of Single/multiple columns using pandas,matplotlib, seaborn, plotly
+#By default, the histrogram method breaks up the dataset into 10 bins.
 data = data[['CYLINDERS','ENGINESIZE','CO2EMISSIONS','FUELCONSUMPTION_COMB']]
 data.hist()
 plt.hist(flights['arr_delay'], color = 'blue', edgecolor = 'black',
          bins = int(180/5))
+
+df_GAB.plot.hist(alpha=0.35,stacked=True,orientation = 'horizontal')
 #seaborn hist=True
 sns.distplot(flights['arr_delay'], hist=True, kde=False, 
              bins=int(180/5), color = 'blue',
@@ -520,6 +536,12 @@ import matplotlib.pyplot as plt
 plt.rcParams['figure.figsize'] = (20,6)
 plt.style.use('seaborn-whitegrid')
 
+#ggplot style
+import matplotlib as mpl
+mpl.style.use('ggplot') # optional: for ggplot-like style
+
+
+
 fig = plt.figure()
 ax = fig.add_axes([.1, .1, 1, 1]) 
 
@@ -533,11 +555,23 @@ ax.set_xticklabels(cars.car_names, rotation=60, fontsize='medium')
 
 ax.grid()
 
+#add subplot
 fig = plt.figure()
 fig, (ax1, ax2) = plt.subplots(1,2)
 
 ax1.plot(x)
 ax2.plot(x,y)
+
+fig = plt.figure() # create figure
+
+ax0 = fig.add_subplot(1, 2, 1) # add subplot 1 (1 row, 2 columns, first plot)
+ax1 = fig.add_subplot(1, 2, 2) # add subplot 2 (1 row, 2 columns, second plot). See tip below**
+
+# Subplot 1: Box plot
+df_CI.plot(kind='box', color='blue', vert=False, figsize=(20, 6), ax=ax0) # add to subplot 1
+# Subplot 2: Line plot
+df_CI.plot(kind='line', figsize=(20, 6), ax=ax1) # add to subplot 2
+
 
 ax.plot(x,y)
 
@@ -602,6 +636,29 @@ stats.probplot(residuals, dist="norm", plot=plt)
 
 8.19 #checking whether the simple regression model is appropriate for a dataset
 sns.residplot(x="x", y="y", data=DF)
+
+8.20 # Line plot Area plot stacked unstacked
+df_top5.plot(kind='area', 
+             alpha=0.25, # 0-1, default value a= 0.5
+             stacked=False, #default True i.e non transparent 
+             figsize=(20, 10),
+            )
+
+8.21 #types of plotting - matplotlib
+#Option 1: Scripting layer (procedural method) - using matplotlib.pyplot as 'plt' *
+# Option 1: This is what we have been using so far
+df_top5.plot(kind='area', alpha=0.35, figsize=(20, 10)) 
+plt.title('Immigration trend of top 5 countries')
+plt.ylabel('Number of immigrants')
+plt.xlabel('Years')
+#Option 2: Artist layer (Object oriented method) - using an Axes instance from Matplotlib (preferred) *
+# option 2: preferred option with more flexibility
+ax = df_top5.plot(kind='area', alpha=0.35, figsize=(20, 10))
+ax.set_title('Immigration Trend of Top 5 Countries')
+ax.set_ylabel('Number of Immigrants')
+ax.set_xlabel('Years')
+#https://github.com/Gurubux/CognitiveClass-ML/blob/master/2-AppliedDataScienceWithPython/2-3-DataVisualizationWithPython/DV0101EN-Exercise-Area-Plots-Histograms-and-Bar-Charts-py.ipynb#scrollTo=qQDcuXr6YLwc
+
 ---------------------------------
 9. STORY TELLING
 ---------------------------------
@@ -656,6 +713,8 @@ final_df.rename(columns={0: 'Region Name', 1: 'Region Status', 2: 'ISO', 3: 'ANS
 
 # setting index / resetting index / making a column index
 cars.index = cars.car_names
+df_can.set_index('Country', inplace=True)
+
 
 #categorical data with crosstabs
 pd.crosstab(cars['am'], cars['gear'])
@@ -726,3 +785,9 @@ pd.options.display.max_columns = None
 
 Write out pickled model
 joblib.dump(cv.best_estimator_, '../../../LR_model.pkl')
+
+
+For a full listing of colors available in Matplotlib, run the following code in your python shell:
+import matplotlib
+for name, hex in matplotlib.colors.cnames.items():
+    print(name, hex)
