@@ -791,3 +791,30 @@ For a full listing of colors available in Matplotlib, run the following code in 
 import matplotlib
 for name, hex in matplotlib.colors.cnames.items():
     print(name, hex)
+
+
+# Plotly in Jupyter google Colab
+#https://stackoverflow.com/questions/47230817/plotly-notebook-mode-with-google-colaboratory
+def enable_plotly_in_cell():
+  import IPython
+  from plotly.offline import init_notebook_mode
+  display(IPython.core.display.HTML('''<script src="/static/components/requirejs/require.js"></script>'''))
+  init_notebook_mode(connected=False)
+
+
+
+from plotly.offline import iplot
+import plotly.graph_objs as go
+
+enable_plotly_in_cell()
+
+data = [
+    go.Contour(
+        z=[[10, 10.625, 12.5, 15.625, 20],
+           [5.625, 6.25, 8.125, 11.25, 15.625],
+           [2.5, 3.125, 5., 8.125, 12.5],
+           [0.625, 1.25, 3.125, 6.25, 10.625],
+           [0, 0.625, 2.5, 5.625, 10]]
+    )
+]
+iplot(data)
